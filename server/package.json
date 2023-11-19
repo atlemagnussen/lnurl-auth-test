@@ -1,0 +1,22 @@
+{
+    "name": "directory-listing-server",
+    "version": "1.0.0",
+    "description": "atle audio¨",
+    "main": "index.js",
+    "scripts": {
+        "start": "cross-env NODE_ENV=local ts-node index.ts",
+        "test": "node test.mjs",
+        "test:ts": "cross-env NODE_ENV=local ts-node test.ts",
+        "build": "tsc",
+        "prod": "cross-env NODE_ENV=prod node ./dist/index.js",
+        "prod:ts": "cross-env NODE_ENV=prod ts-node ./src/index.ts"
+    },
+    "keywords": [
+        "express",
+        "directory",
+        "listing",
+        "audio"
+    ],
+    "author": "atlemagnussen",
+    "license": "ISC"
+}

@@ -1,0 +1,17 @@
+html {
+    font-family: monospace;
+    font-size: 14px;
+}
+* {
+    box-sizing: border-box;
+}
+body {
+    background: var(--primary-background);
+    color: white;
+    margin: 0;
+    padding: 0;
+    height: 100svh;
+    width: 100svw;
+    max-width: 100svw;
+    overflow: hidden;
+}
