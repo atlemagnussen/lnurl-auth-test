@@ -23,6 +23,9 @@
             "@lib/*": ["src/*"]
         }
     },
-    "include": ["src/**/*"],
+    "include": [
+        "src/**/*",
+        "../common/declarations.d.ts"
+    ],
     "exclude": ["node_modules", "lib"]
 }

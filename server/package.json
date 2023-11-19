@@ -18,5 +18,8 @@
         "audio"
     ],
     "author": "atlemagnussen",
-    "license": "ISC"
+    "license": "ISC",
+    "devDependencies": {
+        "@types/secp256k1": "^4.0.6"
+    }
 }
