@@ -5,8 +5,8 @@
     "main": "index.js",
     "scripts": {
         "start": "cross-env NODE_ENV=local ts-node index.ts",
-        "test": "node test.mjs",
-        "test:ts": "cross-env NODE_ENV=local ts-node test.ts",
+        "test:mjs": "node test.mjs",
+        "test": "cross-env NODE_ENV=local ts-node test.ts",
         "build": "tsc",
         "prod": "cross-env NODE_ENV=prod node ./dist/index.js",
         "prod:ts": "cross-env NODE_ENV=prod ts-node ./src/index.ts"

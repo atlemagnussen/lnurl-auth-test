@@ -62,7 +62,7 @@ export class DirListingApp extends LitElement {
 
     @property({ attribute: false })
     config: ConfigFolder = {
-        title: "audio lib loading",
+        title: "LN Auth Test",
     }
 
     render() {
