@@ -1,4 +1,4 @@
-//import lnurl from "lnurl"
+import lnurl from "lnurl"
 //import secp256k1 from "secp256k1"
 //import { bech32 } from "bech32"
 import crypto from "crypto"
@@ -13,14 +13,7 @@ const k1 = "pvg57666"
 
 export const generateAuthUrl = () => {
     const url = `http://${hostname}/api/login?tag=login&k1=${k1}`
-
-    let digest1 = crypto.createHash(hashAlg).update(k1).digest("hex") 
-  
-    let digest2 = crypto.createHash(hashAlg).update(k1).digest("base64")
-
-    return {
-        url, digest1, digest2
-    }
+    return url
 }
 
 export const signJWT = async () => {
@@ -43,6 +36,28 @@ export const signJWT = async () => {
   return jwt
 }
 
+function createHash(data: string | Buffer) {
+    if (typeof data === "string")
+        data = Buffer.from(data, "hex")
+    
+    //     crypto.createHash(hashAlg).update(k1).digest("base64")
+    return crypto.createHash(hashAlg).update(data).digest("hex")
+}
+
+async function verifySig(sig: string, k1: string, key: string) {
+    if (!lnurl.verifyAuthorizationSignature(sig, k1, key)) {
+       throw new Error("Signature verification failed")
+    }
+    const hash = createHash(k1);
+    const hashExist = await isHashUsed(hash)
+    if (!hashExist)
+        throw new Error("Provided k1 is not issued by server")
+    return { key, hash }
+}
+
+async function isHashUsed(hash: string) {
+    return true
+}
 // function encode(url: string) {
 //     const test = lnurl.encode(url)
 
