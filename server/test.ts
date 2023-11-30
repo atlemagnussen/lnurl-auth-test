@@ -1,5 +1,11 @@
 import * as ln from "./src/ln"
 
-const d = ln.generateAuthUrl()
 
-console.log(d)
+async function test() {
+    const jwt = await ln.signJWT()
+    console.log(jwt)
+}
+
+test().catch(err => {
+    console.error(err)
+})
