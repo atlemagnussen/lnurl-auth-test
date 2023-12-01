@@ -1,3 +1,5 @@
+type Action = "register" | "login" | "link" | "auth"
+
 import lnurl from "lnurl"
 //import secp256k1 from "secp256k1"
 //import { bech32 } from "bech32"
@@ -11,8 +13,8 @@ const secret = new TextEncoder().encode("cc7e0d44fd473002f1c42167459001140ec6389
 const hostname = "localhost"
 const k1Default = "cb2a5410e50c6cc3dc1cd62c30ae0e0d735be4a75a703e111f75e0d9179e513e"
 
-export const generateAuthUrl = (k1: string) => {
-    const url = `http://${hostname}/api/login?tag=login&k1=${k1}`
+export const generateAuthUrl = (k1: string, action: Action = "login") => {
+    const url = `http://${hostname}/api/login?tag=login&k1=${k1}&action=${action}`
     return url
 }
 
