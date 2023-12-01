@@ -2,13 +2,15 @@ import { LitElement, css, html } from "lit"
 import { customElement, property } from "lit/decorators.js"
 import type { ConfigFolder } from "@common/types"
 
+import Dialog from "@app/components/dialogEl"
+
 import "./dirHeader"
 import "./components"
 import "./vars.css"
 import "./index.css"
 
-@customElement('dir-listing-app')
-export class DirListingApp extends LitElement {
+@customElement('ln-auth')
+export class LnAuthApp extends LitElement {
     static styles = css`
         :host {
             overflow: hidden;
@@ -65,6 +67,12 @@ export class DirListingApp extends LitElement {
         title: "LN Auth Test",
     }
 
+    login() {
+        Dialog.openHtml({
+            title: "Login LN",
+            hideOkBtn: true
+        }, `<login-dialog class="dialog-fill"></login-dialog>`)
+    }
     render() {
         return html`
             <header>
@@ -73,6 +81,10 @@ export class DirListingApp extends LitElement {
 
             <main>
                 <p>Main Test</p>
+                <p>
+                    <button @click=${this.login}>Login</button>
+                </p>
+                <login-dialog></login-dialog>
             </main>
 
 

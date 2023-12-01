@@ -89,6 +89,10 @@ class DialogElement extends LitElement {
             justify-content: end;
             margin: 0;
         }
+
+        .dialog-fill {
+            height: 100%;
+        }
     `
 
     constructor() {
@@ -159,7 +163,7 @@ class DialogElement extends LitElement {
     hideOkBtn = defaultOptions.hideOkBtn
 
     getSize() {
-        return { minWidth: "90vw", minHeight: "90vh" }
+        return { minWidth: "50vw", minHeight: "50vw" }
     }
     render() {
 
@@ -199,7 +203,7 @@ export enum DialogResult {
     dialogOkFromOutside = "dialog-ok-from-outside"
 }
 
-class DigiLeanDialog {
+class DialogHandler {
     private dialog: DialogElement
     
     constructor() {
@@ -266,4 +270,4 @@ class DigiLeanDialog {
     }
 }
 
-export default new DigiLeanDialog()
+export default new DialogHandler()

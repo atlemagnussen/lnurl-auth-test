@@ -16,6 +16,19 @@ const webIndex = path.resolve(web, "index.html")
 
 app.use(express.static(web))
 
+app.get("/login-url", async (req, res) => {
+    const action = req.query.action ?? "login"
+    console.log("action", action)
+    
+    try {
+        const loginUrlData = await ln.getLoginUrl(action as ln.Action)
+        return res.status(200).json(loginUrlData)
+
+    } catch (error) {
+        res.status(500).send("Unexpected error happened, please try again");
+    }
+})
+
 app.get('/login', async (req,res) => {
     try {
         const { tag, k1, sig, key } = req.query;
