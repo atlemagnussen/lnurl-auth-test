@@ -17,7 +17,7 @@ const webIndex = path.resolve(web, "index.html")
 app.use(express.static(web))
 
 app.get('/login', async (req,res) => {
-    try{
+    try {
         const { tag, k1, sig, key } = req.query;
 
         console.log("req.query=", req.query)
@@ -35,7 +35,7 @@ app.get('/login', async (req,res) => {
         console.log("jwt", jwt)
         return res.status(200).json({ status: "OK" })
 
-    } catch(error){
+    } catch(error) {
         return res.status(400).json({ status: 'ERROR', reason: 'Something wrong happened...' })
     }
 })
