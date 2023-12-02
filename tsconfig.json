@@ -4,7 +4,7 @@
         "common/**/*"
     ],
     "exclude": [
-        "client/*",
+        "web/*",
         "node_modules/*"
     ],
     "compilerOptions": {

@@ -6,6 +6,11 @@
         "esm": true,
         "compilerOptions": {
             "noImplicitAny": true,
+            "baseUrl": ".",
+            "paths": {
+                "@lib/*": ["src/*"],
+                "@common/*": ["../common/*"]
+            }
         }
     },
     "compilerOptions": {
@@ -20,7 +25,8 @@
         "skipLibCheck": true,
         "baseUrl": ".",
         "paths": {
-            "@lib/*": ["src/*"]
+            "@lib/*": ["src/*"],
+            "@common/*": ["../common/*"]
         }
     },
     "include": [
