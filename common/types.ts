@@ -18,3 +18,7 @@ export interface SavedUser {
     key?: string
     jwt?: string
 }
+
+export interface ErrorResponse {
+    reason: string
+}

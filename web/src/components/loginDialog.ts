@@ -28,12 +28,17 @@ export class LoginDialog extends LitElement {
 
     
     async getLnAuth() {
-        const data = await getLnLoginUrl()
-        this.url = data.url
-        this.sessionToken = data.sessionToken
-
-        const qr = createQr(data.encodedUrl)
-        this.qrSvg = qr
+        try {
+            const data = await getLnLoginUrl()
+            this.url = data.url
+            this.sessionToken = data.sessionToken
+    
+            const qr = createQr(data.encodedUrl)
+            this.qrSvg = qr
+        }
+        catch(err: any) {
+            this.msg = err.message
+        }
     }
 
     async isLoggedIn() {
@@ -42,13 +47,23 @@ export class LoginDialog extends LitElement {
             return
         }
         this.msg = ""
-        const data = await isLoggedIn(this.sessionToken)
-        this.msg = JSON.stringify(data)
+        try {
+            const data = await isLoggedIn(this.sessionToken)
+            this.msg = JSON.stringify(data)
+        }
+        catch(err: any) {
+            this.msg = err.message
+        }
     }
 
     async protectedCall() {
-        const data = await backendHttp.get("protected")
-        this.msg = JSON.stringify(data)
+        try {
+            const data = await backendHttp.get("protected")
+            this.msg = JSON.stringify(data)
+        }
+        catch(err: any) {
+            this.msg = err.message
+        }
     }
     @state()
     url = ""

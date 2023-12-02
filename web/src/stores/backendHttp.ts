@@ -1,3 +1,4 @@
+import { ErrorResponse } from "@common/types"
 
 const baseUrl = location.origin
 
@@ -70,10 +71,11 @@ const resHandler = async (res: Response) => {
         
         errorFetchMsg = "Error fetching"
         
-        if (res.status >= 400 && res.status < 500) {
+        if (res.status >= 400 && res.status <= 500) {
             try {
-                const pd = await res.json()
-                console.log(pd)
+                const pd = await res.json() as ErrorResponse
+                if (pd.reason)
+                    errorFetchMsg = pd.reason
             }
             catch (ex) {
                 console.debug(ex);
@@ -81,7 +83,8 @@ const resHandler = async (res: Response) => {
             
         } else {
             const message = await res.text()
-            console.log(message)
+            if (message)
+                errorFetchMsg = message
         }
         
         throw new Error(errorFetchMsg)

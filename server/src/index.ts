@@ -3,7 +3,7 @@ import express from "express"
 import bodyParser from "body-parser"
 import config from "./config.js"
 import * as ln from "./ln.js"
-import type { Action } from "../../common/types.js"
+import type { Action, ErrorResponse } from "../../common/types.js"
 
 const app = express()
 app.use(bodyParser.json()) 
@@ -30,8 +30,11 @@ app.get("/login-url", async (req, res) => {
         console.log(loginUrlData.sessionToken)
         return res.status(200).json(loginUrlData)
 
-    } catch (error) {
-        res.status(500).send("Unexpected error happened, please try again");
+    } catch (error: any) {
+        const errRes: ErrorResponse = {
+            reason: "Unexpected error happened: " + error.message
+        }
+        res.status(500).json(errRes)
     }
 })
 
@@ -58,9 +61,11 @@ app.get("/login", async (req, res) => {
         return res.status(200).json({ status: "OK" })
 
     } catch(error: any) {
-        console.log("error")
         console.error(error.message)
-        return res.status(400).json({ status: 'ERROR', reason: error.message })
+        const errRes: ErrorResponse = {
+            reason: error.message
+        }
+        return res.status(400).json(errRes)
     }
 })
 
@@ -119,9 +124,11 @@ app.get("/protected", async function (req, res) {
         return res.json({sub})
     }
     catch (error: any) {
-        console.log(error)
-        return res.status(400)
-        .json({ status: "error", reason: error.message })
+        console.log(error.message)
+        const errRes: ErrorResponse = {
+            reason: error.message
+        }
+        return res.status(400).json(errRes)
     }
 })
 
