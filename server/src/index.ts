@@ -16,6 +16,11 @@ const webIndex = path.resolve(web, "index.html")
 
 app.use(express.static(web))
 
+/**
+ * 1. User requests a LNURL AUTH URL
+ *  Web client will present as a QR code
+ *  We also return a 5min long session token
+ */
 app.get("/login-url", async (req, res) => {
     const action = req.query.action ?? "login"
     console.log("action", action)
@@ -30,6 +35,12 @@ app.get("/login-url", async (req, res) => {
     }
 })
 
+/**
+ * 2. When LN Wallet scans QR it will sign and pass on the signature along with the k1 into this endpoint
+ * We verify the signature and that the k1 originated from us
+ * key will be the unique ID for the now authenticated user
+ * We create a new auth token and sign it
+ */
 app.get("/login", async (req, res) => {
     try {
         const { tag, k1, sig, key } = req.query;
@@ -39,11 +50,6 @@ app.get("/login", async (req, res) => {
         const verifiedSig = await ln.verifySig(sig as string, k1 as string, key as string)
         
         console.log(verifiedSig)
-
-
-        // generate the auth jwt token
-        const hour = 3600000
-        const maxAge = 30 * 24 * hour;
 
         const jwt = await ln.signJWT({ sub: key })
         
@@ -58,6 +64,11 @@ app.get("/login", async (req, res) => {
     }
 })
 
+/**
+ * 3. The web client must check if the user´s LN wallet has authenticated yet
+ * (should be possible to solve by sending the web client an event)
+ * The session token from 1. will be validated, if OK the auth token will be set as a cookie
+ */
 app.get("/is-logged-in", async (req, res) => {
     const sessionToken = req.headers.session_token as string
 
@@ -67,7 +78,6 @@ app.get("/is-logged-in", async (req, res) => {
     try {
         const verification = await ln.verifySessionToken(sessionToken)
         console.log("verification", verification)
-    
 
         const hash = verification.payload.hash
         if (hash) {
@@ -94,21 +104,25 @@ app.get("/is-logged-in", async (req, res) => {
     return res.json({loggedIn: false, msg: "Could not find user"})
 })
 
+/**
+ * 4. User can call a protected resource
+ * Verify the token in the cookie and extract the userid/key/sub
+ * 
+ */
 app.get("/protected", async function (req, res) {
 
     const cookie = req.headers.cookie
     try {
-        const userToken = await ln.extractUserFromCookie(cookie)
-        console.log(userToken)
-        const { sub } = userToken
+        const authToken = await ln.extractTokenFromCookie(cookie)
+        console.log(authToken)
+        const { sub } = authToken
         return res.json({sub})
     }
     catch (error: any) {
         console.log(error)
         return res.status(400)
-        .json({ status: 'ERROR', reason: error.message })
+        .json({ status: "error", reason: error.message })
     }
-
 })
 
 app.get("*", function (req, res) {

@@ -122,16 +122,16 @@ export function findUserByHash(hash: string) {
     return user
 }
 
-export async function extractUserFromCookie(cookieHeader?: string) {
+export async function extractTokenFromCookie(cookieHeader?: string) {
     console.log("cookieHeader", cookieHeader)
     
     if (!cookieHeader)
-        return { msg: "no cookie"}
+        throw new Error("no cookie")
 
     const cookies = cookie.parse(cookieHeader)
     const token = cookies.Authorization;
     if (!token)
-        return { msg: "No Authorization in cookie" }
+        throw new Error("No Authorization in cookie")
 
     try {
         const verification = await jose.jwtVerify(token, Buffer.from(JWTsecret), {
@@ -140,6 +140,6 @@ export async function extractUserFromCookie(cookieHeader?: string) {
         const { payload } = verification
         return payload
     } catch (error) {
-        return { msg: "Could not verify jwt in cookie"}
+        throw new Error("Could not verify jwt in cookie")
     }
 }

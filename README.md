@@ -2,6 +2,7 @@
 
 TRY THIS https://mtg-dev.tech/blog/building-lighting-auth-api-from-scratch
 
+which is an implementation of [LNURL 04 Auth base spec](https://github.com/lnurl/luds)
 
 ## Credit
 
