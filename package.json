@@ -1,7 +1,7 @@
 {
-  "name": "directory-listing-plus-plus",
+  "name": "ln-auth-test",
   "version": "0.2.0",
-  "description": "directory listing app with extra features like audio player",
+  "description": "test lnurl auth",
   "type": "module",
   "scripts": {
     "build:web": "cd web && npm run build && cd ..",
