@@ -3,6 +3,7 @@ import {customElement, state} from "lit/decorators.js"
 import {unsafeHTML} from "lit/directives/unsafe-html.js"
 
 import { getLnLoginUrl, createQr, isLoggedIn } from "@app/services/lnLogin"
+import backendHttp from "@app/stores/backendHttp"
 
 @customElement('login-dialog')
 export class LoginDialog extends LitElement {
@@ -45,6 +46,10 @@ export class LoginDialog extends LitElement {
         this.msg = JSON.stringify(data)
     }
 
+    async protectedCall() {
+        const data = await backendHttp.get("protected")
+        this.msg = JSON.stringify(data)
+    }
     @state()
     url = ""
 
@@ -66,6 +71,7 @@ export class LoginDialog extends LitElement {
             <div>
                 ${this.url}<br>
                 <button @click=${this.isLoggedIn}>Check is logged in</button>
+                <button @click=${this.protectedCall}>test protected call</button>
             </div>
 
             <div class="error">

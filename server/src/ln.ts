@@ -1,7 +1,7 @@
 
 
 import lnurl from "lnurl"
-
+import cookie from "cookie"
 import crypto from "crypto"
 import * as jose from "jose"
 import type { Action, LoginUrlResponse, SavedUser } from "../../common/types.js"
@@ -115,4 +115,31 @@ export function assignUserKeyJwt(k1: string, key: string, jwt: string) {
     console.log(`Assigned ${key} and ${jwt}`)
     user.key = key
     user.jwt = jwt
+}
+
+export function findUserByHash(hash: string) {
+    const user = users.find(u => u.hash == hash)
+    return user
+}
+
+export async function extractUserFromCookie(cookieHeader?: string) {
+    console.log("cookieHeader", cookieHeader)
+    
+    if (!cookieHeader)
+        return { msg: "no cookie"}
+
+    const cookies = cookie.parse(cookieHeader)
+    const token = cookies.Authorization;
+    if (!token)
+        return { msg: "No Authorization in cookie" }
+
+    try {
+        const verification = await jose.jwtVerify(token, Buffer.from(JWTsecret), {
+            algorithms: [signAlg]
+        })
+        const { payload } = verification
+        return payload
+    } catch (error) {
+        return { msg: "Could not verify jwt in cookie"}
+    }
 }

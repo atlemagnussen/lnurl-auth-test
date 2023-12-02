@@ -34,6 +34,7 @@
     "@appnest/web-router": "^1.4.2",
     "@types/adm-zip": "^0.5.0",
     "bech32": "^2.0.0",
+    "cookie": "^0.6.0",
     "glob": "^10.3.0",
     "jose": "^5.1.2",
     "lit": "^3.1.0",

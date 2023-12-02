@@ -30,7 +30,7 @@ app.get("/login-url", async (req, res) => {
     }
 })
 
-app.get('/login', async (req,res) => {
+app.get("/login", async (req, res) => {
     try {
         const { tag, k1, sig, key } = req.query;
 
@@ -45,7 +45,7 @@ app.get('/login', async (req,res) => {
         const hour = 3600000
         const maxAge = 30 * 24 * hour;
 
-        const jwt = await ln.signJWT({ pubKey: key })
+        const jwt = await ln.signJWT({ sub: key })
         
         ln.assignUserKeyJwt(k1 as string, key as string, jwt)
 
@@ -58,25 +58,65 @@ app.get('/login', async (req,res) => {
     }
 })
 
-app.get('/is-logged-in', async (req, res) => {
+app.get("/is-logged-in", async (req, res) => {
     const sessionToken = req.headers.session_token as string
 
     if (!sessionToken)
         return res.json({loggedIn: false})
 
-    const verification = await ln.verifySessionToken(sessionToken)
-    console.log("verification", verification)
+    try {
+        const verification = await ln.verifySessionToken(sessionToken)
+        console.log("verification", verification)
+    
 
-    if (verification.payload.hash) {
-        res.json({loggedIn: true})
+        const hash = verification.payload.hash
+        if (hash) {
+            const user = ln.findUserByHash(hash as string)
+            if (user && user.jwt) {
+    
+                return res.status(200)
+                .set("Cache-Control", "no-store")
+                .cookie("Authorization", user.jwt, {
+                    maxAge: 60 * 60 * 1000,
+                    secure: false,
+                    httpOnly: true,
+                    sameSite: "lax",
+                })
+                .header('Access-Control-Allow-Origin', serverUrl)
+                .header("Access-Control-Allow-Credentials","true")
+                .json({ loggedIn: true })
+            }   
+        }
     }
+    catch (error) {
+        console.error(error)
+    }
+    return res.json({loggedIn: false, msg: "Could not find user"})
 })
 
-app.get('*', function (req, res) {
+app.get("/protected", async function (req, res) {
+
+    const cookie = req.headers.cookie
+    try {
+        const userToken = await ln.extractUserFromCookie(cookie)
+        console.log(userToken)
+        const { sub } = userToken
+        return res.json({sub})
+    }
+    catch (error: any) {
+        console.log(error)
+        return res.status(400)
+        .json({ status: 'ERROR', reason: error.message })
+    }
+
+})
+
+app.get("*", function (req, res) {
     res.sendFile(webIndex)
 })
 
 let port = config.port ? config.port : 5000
+const serverUrl = `http://${config.hostname}:${port}`
 app.listen(port, '0.0.0.0', () => {
-    console.log(`[server]: Server is running at http://${config.hostname}:${port}`)
+    console.log(`[server]: Server is running at ${serverUrl}`)
 })
