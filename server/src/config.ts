@@ -16,9 +16,11 @@ const port = portStr ? parseInt(portStr) : 8000
 
 const title = process.env.TITLE ? process.env.TITLE : "Dir list++"
 
+const hostname = process.env.HOSTNAME ? process.env.HOSTNAME : "localhost"
 
 export default {
     title,
-    port
+    port,
+    hostname
 }
 

@@ -12,3 +12,14 @@ export function createQr(input: string) {
     const qrSvg = qrCode.toSvgString(qr, 2, "#FFF", "#333")
     return qrSvg
 }
+
+export async function isLoggedIn(session_token: string) {
+    const res = await fetch(location.origin + "/is-logged-in", {
+        credentials: "include",
+        headers: {
+            session_token,
+        },
+    })
+    const data = await res.json()
+    return data
+}

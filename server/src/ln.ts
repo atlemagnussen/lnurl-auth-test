@@ -1,40 +1,49 @@
 
 
 import lnurl from "lnurl"
-//import secp256k1 from "secp256k1"
-//import { bech32 } from "bech32"
+
 import crypto from "crypto"
 import * as jose from "jose"
-import type { Action, LoginUrlResponse } from "../../common/types.js"
+import type { Action, LoginUrlResponse, SavedUser } from "../../common/types.js"
+import config from "./config.js"
+
+const users: SavedUser[] = []
 
 const hashAlg = "sha256"
 const signAlg = "HS256"
-const secret = new TextEncoder().encode("cc7e0d44fd473002f1c42167459001140ec6389b7353f8088f4d9a95f2f596f2")
-
-const hostname = "localhost"
-const k1Default = "cb2a5410e50c6cc3dc1cd62c30ae0e0d735be4a75a703e111f75e0d9179e513e"
+const JWTsecret = new TextEncoder().encode("cc7e0d44fd473002f1c42167459001140ec6389b7353f8088f4d9a95f2f596f2")
 
 const generateAuthUrl = (k1: string, action: Action = "login") => {
     
-    const url = `http://${hostname}/login?tag=login&k1=${k1}&action=${action}`
+    const url = `http://${config.hostname}:${config.port}/login?tag=login&k1=${k1}&action=${action}`
     return url
 }
 
 export async function getLoginUrl(action: Action = "login"): Promise<LoginUrlResponse> {
     const k1 = await generateK1()
     const url = generateAuthUrl(k1, action)
-    const k1Hash = createHash(k1)
+    const hash = createHash(k1)
 
-    const sessionToken = await signSessionToken({ hash: k1Hash})
+    const sessionToken = await signSessionToken({ hash})
+
+    users.push({k1, hash})
+
     return {
         url,
         encodedUrl: lnurl.encode(url).toUpperCase(),
         k1,
-        k1Hash,
+        hash,
         sessionToken
     }
 }
 
+export async function verifySessionToken(sessionToken: string) {
+    const verification = await jose.jwtVerify(
+        sessionToken,
+        Buffer.from(JWTsecret), { algorithms: [signAlg] }
+    )
+    return verification
+}
 
 export async function signJWT(payload: any) {
     const jwt = await new jose.SignJWT(payload)
@@ -43,7 +52,7 @@ export async function signJWT(payload: any) {
             .setIssuer('urn:example:issuer')
             .setAudience('urn:example:audience')
             .setExpirationTime('2h')
-            .sign(secret)
+            .sign(JWTsecret)
     return jwt
 }
 export async function signSessionToken(payload: any) {
@@ -51,7 +60,7 @@ export async function signSessionToken(payload: any) {
         .setProtectedHeader({ alg: signAlg })
         .setIssuedAt()
         .setExpirationTime("5min")
-        .sign(secret)
+        .sign(JWTsecret)
     return sessionToken
 }
 
@@ -75,7 +84,8 @@ export async function verifySig(sig: string, k1: string, key: string) {
 }
 
 async function isHashUsed(hash: string) {
-    return true
+    const found = users.find(u => u.hash == hash)
+    return found
 }
 
 export async function generateK1() {
@@ -92,17 +102,17 @@ export async function generateK1() {
         attempt++
     }
     if (!k1)
-        return k1Default
+        throw new Error("Could not create unique k1")
     
     return k1
 }
-// function encode(url: string) {
-//     const test = lnurl.encode(url)
 
-//     secp256k1.ecdsaVerify()
+export function assignUserKeyJwt(k1: string, key: string, jwt: string) {
+    const user = users.find(u => u.k1 == k1)
+    if (!user)
+        throw new Error("User not found")
 
-
-//     bech32.encode()
-
-//     return test
-// }
+    console.log(`Assigned ${key} and ${jwt}`)
+    user.key = key
+    user.jwt = jwt
+}

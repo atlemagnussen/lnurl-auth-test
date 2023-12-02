@@ -2,7 +2,7 @@ import {LitElement, html, css} from "lit"
 import {customElement, state} from "lit/decorators.js"
 import {unsafeHTML} from "lit/directives/unsafe-html.js"
 
-import { getLnLoginUrl, createQr } from "@app/services/lnLogin"
+import { getLnLoginUrl, createQr, isLoggedIn } from "@app/services/lnLogin"
 
 @customElement('login-dialog')
 export class LoginDialog extends LitElement {
@@ -17,7 +17,6 @@ export class LoginDialog extends LitElement {
         }
     `
 
-
     sendChangeEvent() {
         const changeEvent = new Event("change", {
             bubbles: true,
@@ -30,9 +29,20 @@ export class LoginDialog extends LitElement {
     async getLnAuth() {
         const data = await getLnLoginUrl()
         this.url = data.url
+        this.sessionToken = data.sessionToken
 
         const qr = createQr(data.encodedUrl)
         this.qrSvg = qr
+    }
+
+    async isLoggedIn() {
+        if (!this.sessionToken) {
+            this.msg = "no session token yet"
+            return
+        }
+        this.msg = ""
+        const data = await isLoggedIn(this.sessionToken)
+        this.msg = JSON.stringify(data)
     }
 
     @state()
@@ -41,6 +51,11 @@ export class LoginDialog extends LitElement {
     @state()
     qrSvg = ""
 
+    @state()
+    msg = ""
+
+    sessionToken = ""
+
     render() {
         
         return html`
@@ -48,10 +63,14 @@ export class LoginDialog extends LitElement {
                 <button @click=${this.getLnAuth}>Get Auth url</button>
             </div>
             
-            <p>${this.url}</p>
-            <!-- <textarea class="full" .value=${this.data}>
-            </textarea> -->
+            <div>
+                ${this.url}<br>
+                <button @click=${this.isLoggedIn}>Check is logged in</button>
+            </div>
 
+            <div class="error">
+                ${this.msg}
+            </div>
             <div>
                 ${unsafeHTML(this.qrSvg)}
             </div>
