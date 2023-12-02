@@ -103,8 +103,15 @@ app.get("/is-logged-in", async (req, res) => {
             }   
         }
     }
-    catch (error) {
+    catch (error: any) {
         console.error(error)
+        if (error.reason) {
+            const errRes: ErrorResponse = { reason: error.reason}
+            if (error.code == "ERR_JWT_EXPIRED")
+                errRes.reason += ". Login link expired"
+            
+            return res.status(400).json(errRes)
+        }
     }
     return res.json({loggedIn: false, msg: "Could not find user"})
 })

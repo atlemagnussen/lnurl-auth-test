@@ -36,9 +36,7 @@ export class LoginDialog extends LitElement {
             const qr = createQr(data.encodedUrl)
             this.qrSvg = qr
         }
-        catch(err: any) {
-            this.msg = err.message
-        }
+        catch(e) { this.errorHandler(e) }
     }
 
     async isLoggedIn() {
@@ -47,23 +45,19 @@ export class LoginDialog extends LitElement {
             return
         }
         this.msg = ""
-        try {
-            const data = await isLoggedIn(this.sessionToken)
-            this.msg = JSON.stringify(data)
-        }
-        catch(err: any) {
-            this.msg = err.message
-        }
+        const data = await isLoggedIn(this.sessionToken).catch(this.errorHandler)
+        this.msg = JSON.stringify(data)
     }
 
+    errorHandler(err:any) {
+        this.msg = "error: " + err.message
+    }
     async protectedCall() {
         try {
             const data = await backendHttp.get("protected")
             this.msg = JSON.stringify(data)
         }
-        catch(err: any) {
-            this.msg = err.message
-        }
+        catch(e) { this.errorHandler(e) }
     }
     @state()
     url = ""
