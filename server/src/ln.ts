@@ -1,10 +1,11 @@
-export type Action = "register" | "login" | "link" | "auth"
+
 
 import lnurl from "lnurl"
 //import secp256k1 from "secp256k1"
 //import { bech32 } from "bech32"
 import crypto from "crypto"
 import * as jose from "jose"
+import type { Action, LoginUrlResponse } from "../../common/types.js"
 
 const hashAlg = "sha256"
 const signAlg = "HS256"
@@ -14,23 +15,23 @@ const hostname = "localhost"
 const k1Default = "cb2a5410e50c6cc3dc1cd62c30ae0e0d735be4a75a703e111f75e0d9179e513e"
 
 const generateAuthUrl = (k1: string, action: Action = "login") => {
+    
     const url = `http://${hostname}/login?tag=login&k1=${k1}&action=${action}`
     return url
 }
 
-
-export async function getLoginUrl(action: Action = "login") {
+export async function getLoginUrl(action: Action = "login"): Promise<LoginUrlResponse> {
     const k1 = await generateK1()
     const url = generateAuthUrl(k1, action)
     const k1Hash = createHash(k1)
 
-    const session_token = await signSessionToken({ hash: k1Hash})
+    const sessionToken = await signSessionToken({ hash: k1Hash})
     return {
         url,
-        encoded: lnurl.encode(url).toUpperCase(),
-        secret: k1,
-        secretHash: k1Hash,
-        session_token
+        encodedUrl: lnurl.encode(url).toUpperCase(),
+        k1,
+        k1Hash,
+        sessionToken
     }
 }
 

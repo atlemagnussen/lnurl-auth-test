@@ -1,13 +1,14 @@
 import path from "path"
 import express from "express"
 import bodyParser from "body-parser"
-import config from "@lib/config.js"
-import * as ln from "@lib/ln.js"
+import config from "./config.js"
+import * as ln from "./ln.js"
+import type { Action } from "../../common/types.js"
 
 const app = express()
 app.use(bodyParser.json()) 
 
-const rootFolder = __dirname
+const rootFolder = process.cwd()
 console.log("rootFolder", rootFolder)
 const web = path.resolve("..", "web/dist")
 console.log("web", web)
@@ -20,7 +21,7 @@ app.get("/login-url", async (req, res) => {
     console.log("action", action)
     
     try {
-        const loginUrlData = await ln.getLoginUrl(action as ln.Action)
+        const loginUrlData = await ln.getLoginUrl(action as Action)
         return res.status(200).json(loginUrlData)
 
     } catch (error) {

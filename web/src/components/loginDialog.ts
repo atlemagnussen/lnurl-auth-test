@@ -1,7 +1,8 @@
 import {LitElement, html, css} from "lit"
 import {customElement, state} from "lit/decorators.js"
+import {unsafeHTML} from "lit/directives/unsafe-html.js"
 
-import { getLnLoginUrl } from "@app/services/lnLogin"
+import { getLnLoginUrl, createQr } from "@app/services/lnLogin"
 
 @customElement('login-dialog')
 export class LoginDialog extends LitElement {
@@ -13,9 +14,6 @@ export class LoginDialog extends LitElement {
             height: 100%;
             flex-grow: 1;
             background: blue;
-        }
-        .full {
-            flex: 1 1 auto;
         }
     `
 
@@ -31,25 +29,32 @@ export class LoginDialog extends LitElement {
     
     async getLnAuth() {
         const data = await getLnLoginUrl()
-        const dataStr = JSON.stringify(data, null, 2)
-        this.data = dataStr
+        this.url = data.url
+
+        const qr = createQr(data.encodedUrl)
+        this.qrSvg = qr
     }
 
     @state()
-    data = ""
+    url = ""
+
+    @state()
+    qrSvg = ""
 
     render() {
-        // const classes = {
-        //     "checked": this.checked
-        // }
         
         return html`
             <div>
                 <button @click=${this.getLnAuth}>Get Auth url</button>
             </div>
             
-            <textarea class="full" .value=${this.data}>
-            </textarea>
+            <p>${this.url}</p>
+            <!-- <textarea class="full" .value=${this.data}>
+            </textarea> -->
+
+            <div>
+                ${unsafeHTML(this.qrSvg)}
+            </div>
         `
     }
 }
