@@ -1,9 +1,8 @@
 import path from "path"
 import express from "express"
 import bodyParser from "body-parser"
-import config from "./config"
-import * as ln from "./ln"
-import * as jose from "jose"
+import config from "@lib/config.js"
+import * as ln from "@lib/ln.js"
 
 const app = express()
 app.use(bodyParser.json()) 

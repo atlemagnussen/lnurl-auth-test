@@ -2,7 +2,7 @@
     "name": "directory-listing-server",
     "version": "1.0.0",
     "description": "atle audio¨",
-    "main": "index.js",
+    "type": "module",
     "scripts": {
         "start": "cross-env NODE_ENV=local ts-node index.ts",
         "test:mjs": "node test.mjs",

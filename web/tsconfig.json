@@ -3,11 +3,8 @@
         "incremental": true,
         "target": "ESNext",
         "module": "ESNext",
-        "lib": [
-            "ES2020",
-            "DOM",
-            "DOM.Iterable"
-        ],
+        "lib": ["ES2020", "DOM", "DOM.Iterable"],
+        "moduleResolution": "Node",
         "noEmit": true,
         "outDir": "./types",
         "strict": true,
@@ -15,7 +12,6 @@
         "noUnusedParameters": true,
         "noImplicitReturns": true,
         "noFallthroughCasesInSwitch": true,
-        "moduleResolution": "Node",
         "isolatedModules": true,
         "allowSyntheticDefaultImports": true,
         "experimentalDecorators": true,
@@ -29,7 +25,6 @@
         }
     },
     "include": [
-        "common/**/*.ts",
         "src/**/*.ts"
     ],
     "references": [

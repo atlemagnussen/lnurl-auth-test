@@ -14,15 +14,21 @@
         }
     },
     "compilerOptions": {
+        "incremental": true,
         "target": "ES2022",
         "module": "NodeNext",
+        "lib": ["ES2020"],
         "moduleResolution": "NodeNext",
-        "forceConsistentCasingInFileNames": true,
+        "noEmit": true,
+        "composite": true,
+        "allowSyntheticDefaultImports": true,
+        "isolatedModules": true,
         "strict": true,
         "outDir": "lib",
         "declaration": true,
         "esModuleInterop": true,
         "skipLibCheck": true,
+        "rootDir": "..",
         "baseUrl": ".",
         "paths": {
             "@lib/*": ["src/*"],
@@ -30,8 +36,8 @@
         }
     },
     "include": [
-        "src/**/*",
-        "../common/declarations.d.ts"
+        "./**/*.ts",
+        "../common/**/*.ts"
     ],
     "exclude": ["node_modules", "lib"]
 }
