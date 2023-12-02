@@ -59,7 +59,7 @@ export async function signSessionToken(payload: any) {
     const sessionToken = await new jose.SignJWT(payload)
         .setProtectedHeader({ alg: signAlg })
         .setIssuedAt()
-        .setExpirationTime("1min")
+        .setExpirationTime("5min")
         .sign(JWTsecret)
     return sessionToken
 }
