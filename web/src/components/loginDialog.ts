@@ -11,13 +11,30 @@ export class LoginDialog extends LitElement {
     static styles = css`
         :host {
             display: flex;
-            flex-direction: column;
-            height: 100%;
+            flex-direction: row;
+            justify-content: center;
             flex-grow: 1;
-            background: blue;
+        }
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 1rem;
+            width: var(--default-width);
+            max-width: var(--default-width);
+            background: black;
         }
         .qr-code {
-            width: 20vw;
+            width: 80%;
+        }
+        .menu {
+            overflow-wrap: anywhere;
+        }
+        @media only screen and (max-width: 640px) {
+            .wrapper {
+                width: 100%;
+                max-width: 100%;
+            }
         }
     `
 
@@ -76,22 +93,24 @@ export class LoginDialog extends LitElement {
     render() {
         
         return html`
+        <section class="wrapper">
             <div>
                 <button @click=${this.getLnAuth}>Get Auth url</button>
             </div>
             
-            <div>
+            <div class="menu">
                 ${this.url}<br>
                 <button @click=${this.isLoggedIn}>Check is logged in</button>
                 <button @click=${this.protectedCall}>test protected call</button>
             </div>
 
-            <div class="error">
+            <div class="message">
                 ${this.msg}
             </div>
             <div class="qr-code">
                 ${unsafeHTML(this.qrSvg)}
             </div>
+        </section>
         `
     }
 }
