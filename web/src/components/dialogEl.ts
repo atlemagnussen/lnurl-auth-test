@@ -163,7 +163,7 @@ class DialogElement extends LitElement {
     hideOkBtn = defaultOptions.hideOkBtn
 
     getSize() {
-        return { minWidth: "50vw", minHeight: "50vw" }
+        return { minWidth: "30vw", minHeight: "30vw" }
     }
     render() {
 

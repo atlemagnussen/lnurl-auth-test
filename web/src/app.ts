@@ -84,9 +84,7 @@ export class LnAuthApp extends LitElement {
                 <p>
                     <button @click=${this.login}>Login</button>
                 </p>
-                <login-dialog></login-dialog>
             </main>
-
 
             <footer>
                 <p>footer</p>

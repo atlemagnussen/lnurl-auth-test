@@ -16,6 +16,9 @@ export class LoginDialog extends LitElement {
             flex-grow: 1;
             background: blue;
         }
+        .qr-code {
+            width: 20vw;
+        }
     `
 
     sendChangeEvent() {
@@ -86,7 +89,7 @@ export class LoginDialog extends LitElement {
             <div class="error">
                 ${this.msg}
             </div>
-            <div>
+            <div class="qr-code">
                 ${unsafeHTML(this.qrSvg)}
             </div>
         `
