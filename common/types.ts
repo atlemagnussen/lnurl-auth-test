@@ -7,6 +7,7 @@ export type Action = "register" | "login" | "link" | "auth"
 export interface LoginUrlResponse {
     url: string
     encodedUrl: string
+    urlLnScheme: string
     k1: string
     hash: string
     sessionToken: string

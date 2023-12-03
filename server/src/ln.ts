@@ -22,6 +22,7 @@ const generateAuthUrl = (k1: string, action: Action = "login") => {
 export async function getLoginUrl(action: Action = "login"): Promise<LoginUrlResponse> {
     const k1 = await generateK1()
     const url = generateAuthUrl(k1, action)
+    const urlLnScheme = url.replace("http://", "keyauth://")
     const hash = createHash(k1)
 
     const sessionToken = await signSessionToken({ hash})
@@ -31,6 +32,7 @@ export async function getLoginUrl(action: Action = "login"): Promise<LoginUrlRes
     return {
         url,
         encodedUrl: lnurl.encode(url).toUpperCase(),
+        urlLnScheme,
         k1,
         hash,
         sessionToken

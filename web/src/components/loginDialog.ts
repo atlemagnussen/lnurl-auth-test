@@ -30,6 +30,9 @@ export class LoginDialog extends LitElement {
         .menu {
             overflow-wrap: anywhere;
         }
+        a {
+            color: white;
+        }
         @media only screen and (max-width: 640px) {
             .wrapper {
                 width: 100%;
@@ -51,6 +54,9 @@ export class LoginDialog extends LitElement {
         try {
             const data = await getLnLoginUrl()
             this.url = data.url
+            this.encoded = data.encodedUrl
+            this.urlLnScheme = data.urlLnScheme
+
             this.sessionToken = data.sessionToken
     
             const qr = createQr(data.encodedUrl)
@@ -83,6 +89,12 @@ export class LoginDialog extends LitElement {
     url = ""
 
     @state()
+    encoded = ""
+
+    @state()
+    urlLnScheme = ""
+
+    @state()
     qrSvg = ""
 
     @state()
@@ -100,6 +112,9 @@ export class LoginDialog extends LitElement {
             
             <div class="menu">
                 ${this.url}<br>
+                ${this.encoded}<br><br>
+                ${this.urlLnScheme ? html`<a href="${this.urlLnScheme}">LnUrl Auth scheme</a><br><br>` : ""}
+                
                 <button @click=${this.isLoggedIn}>Check is logged in</button>
                 <button @click=${this.protectedCall}>test protected call</button>
             </div>
