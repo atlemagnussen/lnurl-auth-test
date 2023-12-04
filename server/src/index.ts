@@ -23,11 +23,10 @@ app.use(express.static(web))
  */
 app.get("/login-url", async (req, res) => {
     const action = req.query.action ?? "login"
-    console.log("action", action)
-    
+    console.log(`login-url:: protocol=${req.protocol}, action=${action}`)
+
     try {
-        const loginUrlData = await ln.getLoginUrl(action as Action)
-        console.log(loginUrlData.sessionToken)
+        const loginUrlData = await ln.getLoginUrl(req.protocol, action as Action)
         return res.status(200).json(loginUrlData)
 
     } catch (error: any) {
@@ -48,7 +47,7 @@ app.get("/login", async (req, res) => {
     try {
         const { tag, k1, sig, key } = req.query;
 
-        console.log("req.query=", req.query)
+        console.log("login::req.query=", req.query)
 
         const verifiedSig = await ln.verifySig(sig as string, k1 as string, key as string)
         

@@ -13,15 +13,15 @@ const hashAlg = "sha256"
 const signAlg = "HS256"
 const JWTsecret = new TextEncoder().encode("cc7e0d44fd473002f1c42167459001140ec6389b7353f8088f4d9a95f2f596f2")
 
-const generateAuthUrl = (k1: string, action: Action = "login") => {
+const generateAuthUrl = (protocol: string, k1: string, action: Action = "login") => {
     
-    const url = `http://${config.hostname}:${config.port}/login?tag=login&k1=${k1}&action=${action}`
+    const url = `${protocol}://${config.hostname}:${config.port}/login?tag=login&k1=${k1}&action=${action}`
     return url
 }
 
-export async function getLoginUrl(action: Action = "login"): Promise<LoginUrlResponse> {
+export async function getLoginUrl(protocol: string, action: Action = "login"): Promise<LoginUrlResponse> {
     const k1 = await generateK1()
-    const url = generateAuthUrl(k1, action)
+    const url = generateAuthUrl(protocol, k1, action)
     const urlLnScheme = url.replace("http://", "keyauth://")
     const hash = createHash(k1)
 
