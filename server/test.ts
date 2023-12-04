@@ -1,7 +1,8 @@
 // import * as ln from "./src/ln"
 import lnurl from "lnurl"
 // import qrcodegen from "@common/thirdparty/qrcodegen.js"
-import * as ln from "@lib/ln.js"
+// import * as ln from "@lib/ln.js"
+import qrcode from "qrcode"
 
 async function test() {
     const lnUrlEncoded = "LNURL1DP68GURN8GHJ7CT4W35ZUCN0D36ZUEN4DCHJUMN9W3KXJENE9AN82MNRW35K7MNN9AKX7EMFDCLHGCT884KX7EMFDCNXKVFAXSMXXD3NXCENWDP5XUERQDE3VCMRSDM98YCNYCTXXDNRYCFJVVUNWVRYX5MNJDRP8QCXXDFHVEJNVVNXXUURSVPHVCMRVCM9X5CRYDCCMPVD2"
@@ -9,9 +10,11 @@ async function test() {
     const url = lnurl.decode(lnUrlEncoded)
     console.log(url)
 
-    const k1 = ln.generateK1()
-    console.log(k1)
+    // const k1 = ln.generateK1()
+    // console.log(k1)
 
+    const q = qrcode.toString("hello")
+    console.log(q)
     //const jwt = await ln.signJWT()
     //const k1 = await ln.generateK1()
     //console.log(k1)
