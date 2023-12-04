@@ -78,7 +78,7 @@ app.get("/is-logged-in", async (req, res) => {
     const sessionToken = req.headers.session_token as string
 
     if (!sessionToken)
-        return res.json({loggedIn: false, "no session token"})
+        return res.json({loggedIn: false, reason: "no session token"})
 
     try {
         const verification = await ln.verifySessionToken(sessionToken)
