@@ -27,6 +27,7 @@ app.get("/login-url", async (req, res) => {
 
     try {
         const loginUrlData = await ln.getLoginUrl(req.protocol, action as Action)
+        console.log("baseurl created: ", loginUrlData.url)
         return res.status(200).json(loginUrlData)
 
     } catch (error: any) {

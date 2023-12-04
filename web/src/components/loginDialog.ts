@@ -54,12 +54,12 @@ export class LoginDialog extends LitElement {
         try {
             const data = await getLnLoginUrl()
             this.url = data.url
-            this.encoded = data.encodedUrl
+            // this.encoded = data.encodedUrl
             this.urlLnScheme = data.urlLnScheme
 
             this.sessionToken = data.sessionToken
     
-            const qr = createQr(data.encodedUrl)
+            const qr = createQr(data.urlLnScheme)
             this.qrSvg = qr
         }
         catch(e) { this.errorHandler(e) }
@@ -111,8 +111,8 @@ export class LoginDialog extends LitElement {
             </div>
             
             <div class="menu">
-                ${this.url}<br>
-                ${this.encoded}<br><br>
+                ${this.url}<br><br>
+                ${this.urlLnScheme}<br><br>
                 ${this.urlLnScheme ? html`<a href="${this.urlLnScheme}">LnUrl Auth scheme</a><br><br>` : ""}
                 
                 <button @click=${this.isLoggedIn}>Check is logged in</button>

@@ -15,7 +15,10 @@ const JWTsecret = new TextEncoder().encode("cc7e0d44fd473002f1c42167459001140ec6
 
 const generateAuthUrl = (protocol: string, k1: string, action: Action = "login") => {
     
-    const url = `${protocol}://${config.hostname}:${config.port}/login?tag=login&k1=${k1}&action=${action}`
+    let url = `${protocol}://${config.hostname}`
+    if (config.portInLnLink)
+        url += `:${config.port}`
+    url += `/login?tag=login&k1=${k1}&action=${action}`
     return url
 }
 

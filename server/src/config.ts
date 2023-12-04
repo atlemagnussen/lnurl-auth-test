@@ -18,9 +18,12 @@ const title = process.env.TITLE ? process.env.TITLE : "Dir list++"
 
 const hostname = process.env.HOSTNAME ? process.env.HOSTNAME : "localhost"
 
+const portInLnLink = (process.env.PORTINLNLINK && process.env.PORTINLNLINK == "true") ? true : false
+
 export default {
     title,
     port,
+    portInLnLink,
     hostname
 }
 
