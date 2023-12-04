@@ -13,11 +13,11 @@ export function createQr(input: string) {
     return qrSvg
 }
 
-export async function isLoggedIn(session_token: string) {
+export async function isLoggedIn(sessiontoken: string) {
     const res = await fetch(location.origin + "/is-logged-in", {
         credentials: "include",
         headers: {
-            session_token,
+            sessiontoken,
         },
     })
     const data = await res.json()

@@ -75,7 +75,7 @@ app.get("/login", async (req, res) => {
  * The session token from 1. will be validated, if OK the auth token will be set as a cookie
  */
 app.get("/is-logged-in", async (req, res) => {
-    const sessionToken = req.headers.session_token as string
+    const sessionToken = req.headers.sessiontoken as string
 
     if (!sessionToken)
         return res.json({loggedIn: false, reason: "no session token"})
