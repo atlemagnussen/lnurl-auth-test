@@ -27,7 +27,7 @@ export class LoginDialog extends LitElement {
         .qr-code {
             width: 80%;
         }
-        .menu {
+        .wrap-anywhere {
             overflow-wrap: anywhere;
         }
         a {
@@ -110,7 +110,7 @@ export class LoginDialog extends LitElement {
                 <button @click=${this.getLnAuth}>Get Auth url</button>
             </div>
             
-            <div class="menu">
+            <div class="wrap-anywhere">
                 ${this.url}<br><br>
                 ${this.urlLnScheme}<br><br>
                 ${this.urlLnScheme ? html`<a href="${this.urlLnScheme}">LnUrl Auth scheme</a><br><br>` : ""}
@@ -119,7 +119,7 @@ export class LoginDialog extends LitElement {
                 <button @click=${this.protectedCall}>test protected call</button>
             </div>
 
-            <div class="message">
+            <div class="wrap-anywhere">
                 ${this.msg}
             </div>
             <div class="qr-code">
