@@ -54,7 +54,7 @@ app.get("/login", async (req, res) => {
         
         console.log(verifiedSig)
 
-        const jwt = await ln.signJWT({ sub: key })
+        const jwt = await ln.signJWT({ sub: key, idp: "LNURL-auth" })
         
         ln.assignUserKeyJwt(k1 as string, key as string, jwt)
 
@@ -92,7 +92,7 @@ app.get("/is-logged-in", async (req, res) => {
                 return res.status(200)
                 .set("Cache-Control", "no-store")
                 .cookie("Authorization", user.jwt, {
-                    maxAge: 60 * 60 * 1000,
+                    maxAge: 24 * 60 * 60 * 1000,
                     secure: false,
                     httpOnly: true,
                     sameSite: "lax",
@@ -121,14 +121,13 @@ app.get("/is-logged-in", async (req, res) => {
  * Verify the token in the cookie and extract the userid/key/sub
  * 
  */
-app.get("/protected", async function (req, res) {
+app.get("/logged-in-user", async function (req, res) {
 
     const cookie = req.headers.cookie
     try {
         const authToken = await ln.extractTokenFromCookie(cookie)
         console.log(authToken)
-        const { sub } = authToken
-        return res.json({sub})
+        return res.json(authToken)
     }
     catch (error: any) {
         console.log(error.message)

@@ -80,7 +80,7 @@ export class LoginDialog extends LitElement {
     }
     async protectedCall() {
         try {
-            const data = await backendHttp.get("protected")
+            const data = await backendHttp.get("logged-in-user")
             this.msg = JSON.stringify(data)
         }
         catch(e) { this.errorHandler(e) }

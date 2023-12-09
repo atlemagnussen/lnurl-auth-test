@@ -54,9 +54,10 @@ export async function signJWT(payload: any) {
     const jwt = await new jose.SignJWT(payload)
             .setProtectedHeader({ alg: signAlg })
             .setIssuedAt()
-            .setIssuer('urn:example:issuer')
-            .setAudience('urn:example:audience')
-            .setExpirationTime('2h')
+            .setIssuer("config.hostname")
+            .setAudience("users")
+            
+            .setExpirationTime("24h")
             .sign(JWTsecret)
     return jwt
 }
