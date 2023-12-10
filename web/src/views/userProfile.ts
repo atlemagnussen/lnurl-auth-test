@@ -79,9 +79,12 @@ export class UserProfile extends LitElement {
                 Expires: <datetime-viewer .date=${exp}></datetime-viewer>
             </p>
             <br>
-            <p>
-                <button @click=${this.logout}>Log out</button>
-            </p>
+            ${this.user ? html`
+                <p>
+                    <button @click=${this.logout}>Log out</button>
+                </p>
+            ` : html``}
+            
         </section>
         `
     }

@@ -72,7 +72,10 @@ export class LoginDialog extends LitElement {
         this.msg = ""
         const data = await isLoggedIn(this.sessionToken).catch(this.errorHandler)
         this.msg = JSON.stringify(data)
-        getAuthUser()
+        getAuthUser().then(u => {
+            if (u && u.sub)
+                history.replaceState(null, "", "/profile")
+        })
     }
 
     errorHandler(err:any) {

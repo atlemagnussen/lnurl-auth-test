@@ -19,14 +19,19 @@ export async function getAuthUser() {
     try {
         const user  = await backendHttp.get<AuthUserToken>("logged-in-user")
         authUserSubject.next(user)
+        return user
     }
     catch (error) {
         const currentUser = authUserSubject.getValue()
         if (currentUser?.sub)
             authUserSubject.next(null)
     }
+    return null
 }
 
+export function getUserNow() {
+    return authUserSubject.getValue()
+}
 
 export async function logOut() {
     await backendHttp.get("logout")

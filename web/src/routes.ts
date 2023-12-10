@@ -1,6 +1,9 @@
-import "@appnest/web-router"
+import "router-slot"
+import { RouterSlot } from "router-slot"
 import "./views"
-import { RouterSlot } from "@appnest/web-router"
+import { getUserNow } from "./stores/authUser"
+
+
 
 const defaultView = () => {
     return document.createElement("home-view")
@@ -12,11 +15,8 @@ export function setupRoutes(routerSlot:  RouterSlot<any, any> | null | undefined
     // const routerSlot = document.querySelector("router-slot")
     if (!routerSlot)
         throw new Error("NO ROUTER ELEMENT!")
+
     routerSlot.add([
-        {
-            path: "home",
-            component: defaultView()
-        },
         {
             path: "thread/:forum/:threadId",
             component: document.createElement("thread-view"),
@@ -28,15 +28,31 @@ export function setupRoutes(routerSlot:  RouterSlot<any, any> | null | undefined
         },
         {
             path: "profile",
-            component: document.createElement("user-profile-view")
+            component: document.createElement("user-profile-view"),
+            guards: [loggedInGuard]
         },
         {
             path: "login",
             component: document.createElement("login-dialog")
         },
         {
+            path: "/",
+            component: defaultView()
+        },
+        {
             path: "**",
-            redirectTo: "home"
+            redirectTo: "/"
         }
     ])
+}
+
+function loggedInGuard () {
+    const user = getUserNow()
+
+    if (!user || !user.sub) {
+        history.replaceState(null, "", "/login")
+        return false
+    }
+  
+    return true
 }
