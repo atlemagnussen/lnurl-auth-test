@@ -24,6 +24,7 @@ export class LoginDialog extends LitElement {
             width: var(--default-width);
             max-width: var(--default-width);
             background: black;
+            padding: 0.5rem;
         }
         .qr-code {
             width: 80%;
@@ -34,6 +35,11 @@ export class LoginDialog extends LitElement {
         }
         a {
             color: white;
+        }
+        ln-button {
+            --button-color: var(--ln-blue);
+            --button-width: 5rem;
+            --button-height: 5rem;
         }
         @media only screen and (max-width: 640px) {
             .wrapper {
@@ -109,17 +115,28 @@ export class LoginDialog extends LitElement {
     render() {
         return html`
         <section class="wrapper">
+            <header>
+                <h1>Log in with LNURL-auth</h1>
+            </header>
             <div>
                 <dir-button @click=${this.getLnAuth}>Get a new Auth url</dir-button>
             </div>
             
-            <div class="wrap-anywhere">
+            <!-- <div class="wrap-anywhere">
                 ${this.url}<br><br>
                 ${this.urlLnScheme}<br><br>
-                ${this.urlLnScheme ? html`<a href="${this.urlLnScheme}">LnUrl Auth scheme</a><br><br>` : ""}
-                
-                <dir-button @click=${this.isLoggedIn}>Check is logged in</dir-button>
-            </div>
+            </div> -->
+
+            ${this.urlLnScheme ? html`
+                <a href="${this.urlLnScheme}">
+                    <figure>
+                        <ln-button></figure>
+                        <figcaption>Click here or scan QR</figcaption>
+                    </figure>
+                </a><br>
+            ` : ""}
+
+            <dir-button @click=${this.isLoggedIn}>Check is logged in</dir-button>
 
             <div class="wrap-anywhere">
                 ${this.msg}

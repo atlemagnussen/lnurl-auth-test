@@ -23,7 +23,7 @@ export class UserIndicator extends LitElement {
 
     @state()
     user: AuthUserToken | null = null
-    
+
     sub: Subscription | null = null
 
     connectedCallback(): void {
@@ -35,7 +35,7 @@ export class UserIndicator extends LitElement {
 
         const loggedin = this.user?.iss!!
         
-
+        this.title = loggedin ? "Logged in" : "Not logged in"
         if (loggedin) {
             return html`
                 <a href="profile">
