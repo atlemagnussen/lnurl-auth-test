@@ -20,6 +20,27 @@ export interface SavedUser {
     jwt?: string
 }
 
-export interface ErrorResponse {
+export type ErrorResponse = {
     reason: string
+}
+
+export class BackendError extends Error {
+
+    status = 0
+    reason: string | undefined
+    
+    constructor(message: string, status: number, reason?: string) {
+        super(message)
+        this.status = status
+        this.reason = reason
+    }
+}
+
+export interface AuthUserToken {
+    sub: string
+    iss: string
+    aud: string
+    idp?: string
+    iat: number
+    exp: number
 }

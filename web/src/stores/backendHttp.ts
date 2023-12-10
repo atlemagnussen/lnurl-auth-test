@@ -1,4 +1,4 @@
-import { ErrorResponse } from "@common/types"
+import { BackendError, ErrorResponse } from "@common/types"
 
 const baseUrl = location.origin
 
@@ -40,13 +40,7 @@ const createRequest = (url: string, method: string, contentType?: string, data?:
 }
 
 async function http<T>(request: RequestInfo): Promise<T> {
-    let errorFetchMsg
     const res = await fetch(request)
-    .catch((error) => {
-        errorFetchMsg = "Error fetching"
-        console.error(error.message)
-        throw new Error(errorFetchMsg)
-    })
     return resHandler(res)
 }
 
@@ -75,19 +69,19 @@ const resHandler = async (res: Response) => {
             try {
                 const pd = await res.json() as ErrorResponse
                 if (pd.reason)
-                    errorFetchMsg = pd.reason
+                    throw new BackendError(errorFetchMsg, res.status, pd.reason)
             }
             catch (ex) {
                 console.debug(ex);
             }
-            
+            throw new BackendError(errorFetchMsg, res.status)
         } else {
             const message = await res.text()
             if (message)
                 errorFetchMsg = message
         }
         
-        throw new Error(errorFetchMsg)
+        throw new BackendError(errorFetchMsg, res.status)
     }
 }
 

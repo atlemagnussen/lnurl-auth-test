@@ -1,9 +1,8 @@
 import {LitElement, html, css} from "lit"
 import {customElement, state} from "lit/decorators.js"
 import {unsafeHTML} from "lit/directives/unsafe-html.js"
-
+import { getAuthUser } from "@app/stores/authUser"
 import { getLnLoginUrl, createQr, isLoggedIn } from "@app/services/lnLogin"
-import backendHttp from "@app/stores/backendHttp"
 
 @customElement('login-dialog')
 export class LoginDialog extends LitElement {
@@ -73,18 +72,13 @@ export class LoginDialog extends LitElement {
         this.msg = ""
         const data = await isLoggedIn(this.sessionToken).catch(this.errorHandler)
         this.msg = JSON.stringify(data)
+        getAuthUser()
     }
 
     errorHandler(err:any) {
         this.msg = "error: " + err.message
     }
-    async protectedCall() {
-        try {
-            const data = await backendHttp.get("logged-in-user")
-            this.msg = JSON.stringify(data)
-        }
-        catch(e) { this.errorHandler(e) }
-    }
+    
     @state()
     url = ""
 
@@ -116,7 +110,6 @@ export class LoginDialog extends LitElement {
                 ${this.urlLnScheme ? html`<a href="${this.urlLnScheme}">LnUrl Auth scheme</a><br><br>` : ""}
                 
                 <button @click=${this.isLoggedIn}>Check is logged in</button>
-                <button @click=${this.protectedCall}>test protected call</button>
             </div>
 
             <div class="wrap-anywhere">

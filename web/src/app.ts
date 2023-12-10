@@ -1,13 +1,16 @@
 import { LitElement, css, html } from "lit"
 import { customElement, property } from "lit/decorators.js"
-import type { ConfigFolder } from "@common/types"
+import type { AuthUserToken, ConfigFolder } from "@common/types"
 
-import Dialog from "@app/components/dialogEl"
+import { getAuthUser, authUser } from "@app/stores/authUser"
+
+// import Dialog from "@app/components/dialogEl"
 
 import "./dirHeader"
 import "./components"
 import "./vars.css"
 import "./index.css"
+import { Subscription } from "rxjs"
 
 @customElement('ln-auth')
 export class LnAuthApp extends LitElement {
@@ -62,17 +65,27 @@ export class LnAuthApp extends LitElement {
         }
     `
 
+    user: AuthUserToken | null = null
+
+    sub: Subscription | null = null
+
     @property({ attribute: false })
     config: ConfigFolder = {
         title: "LN Auth Test",
     }
 
-    login() {
-        Dialog.openHtml({
-            title: "Login LN",
-            hideOkBtn: true
-        }, `<login-dialog class="dialog-fill"></login-dialog>`)
+    connectedCallback(): void {
+        super.connectedCallback()
+        getAuthUser()
+        this.sub = authUser.subscribe(u => this.user = u)
     }
+
+    // login() {
+    //     Dialog.openHtml({
+    //         title: "Login LN",
+    //         hideOkBtn: true
+    //     }, `<login-dialog class="dialog-fill"></login-dialog>`)
+    // }
     render() {
         return html`
             <header>
@@ -80,7 +93,12 @@ export class LnAuthApp extends LitElement {
             </header>
 
             <main>
-                <login-dialog></login-dialog>
+                ${this.user ? html`
+                    <logged-in-user></logged-in-user>
+                ` : html`
+                    <login-dialog></login-dialog>
+                `}
+                
             </main>
 
             <footer>

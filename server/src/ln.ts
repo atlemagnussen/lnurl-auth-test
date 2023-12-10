@@ -4,7 +4,7 @@ import lnurl from "lnurl"
 import cookie from "cookie"
 import crypto from "crypto"
 import * as jose from "jose"
-import type { Action, LoginUrlResponse, SavedUser } from "../../common/types.js"
+import type { Action, AuthUserToken, LoginUrlResponse, SavedUser } from "../../common/types.js"
 import config from "./config.js"
 
 const users: SavedUser[] = []
@@ -54,7 +54,7 @@ export async function signJWT(payload: any) {
     const jwt = await new jose.SignJWT(payload)
             .setProtectedHeader({ alg: signAlg })
             .setIssuedAt()
-            .setIssuer("config.hostname")
+            .setIssuer(config.hostname)
             .setAudience("users")
             
             .setExpirationTime("24h")
@@ -144,7 +144,7 @@ export async function extractTokenFromCookie(cookieHeader?: string) {
             algorithms: [signAlg]
         })
         const { payload } = verification
-        return payload
+        return payload as AuthUserToken
     } catch (error) {
         throw new Error("Could not verify jwt in cookie")
     }
