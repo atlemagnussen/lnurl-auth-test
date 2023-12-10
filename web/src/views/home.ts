@@ -1,4 +1,4 @@
-import { LitElement, css, html, svg } from "lit"
+import { LitElement, css, html } from "lit"
 import { customElement } from "lit/decorators.js"
 
 @customElement('home-view')
