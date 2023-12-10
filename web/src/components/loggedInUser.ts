@@ -66,8 +66,11 @@ export class LoggedInUser extends LitElement {
         return html`
         <section class="wrapper">
             <h1>You are logged in</h1>
+            <p class="wrap-anywhere">
+                userId: ${this.user?.sub}
+            </p>
             <p>
-                userId: ${this.user?.iss}
+                Issuer: ${this.user?.iss}, Idp: ${this.user?.idp}
             </p>
             <p>
                 Issued: ${this.parseTokenDate(this.user?.iat)}
