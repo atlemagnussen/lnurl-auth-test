@@ -3,6 +3,7 @@ import {customElement, state} from "lit/decorators.js"
 import { authUser, logOut } from "@app/stores/authUser"
 import { AuthUserToken } from "@common/types"
 import { Subscription } from "rxjs"
+import { navigateTo } from "@app/routes"
 
 
 @customElement('user-profile-view')
@@ -46,7 +47,11 @@ export class UserProfile extends LitElement {
 
     connectedCallback(): void {
         super.connectedCallback()
-        this.sub = authUser.subscribe(u => this.user = u)
+        this.sub = authUser.subscribe(u => {
+            this.user = u
+            if (!this.user)
+                navigateTo("/login")
+        })
     }
     disconnectedCallback(): void {
         super.disconnectedCallback()
@@ -54,10 +59,6 @@ export class UserProfile extends LitElement {
             this.sub.unsubscribe()
     }
 
-    logout() {
-        console.log("fire logout")
-        logOut()
-    }
     render() {
         
         const iat = this.user ? this.user.iat * 1000 : 0
@@ -65,25 +66,28 @@ export class UserProfile extends LitElement {
 
         return html`
         <section class="wrapper">
-            <h1>You are logged in</h1>
-            <p class="wrap-anywhere">
-                userId: ${this.user?.sub}
-            </p>
-            <p>
-                Issuer: ${this.user?.iss}, Idp: ${this.user?.idp}
-            </p>
-            <p>
-                Issued: <datetime-viewer .date=${iat}></datetime-viewer>
-            </p>
-            <p>
-                Expires: <datetime-viewer .date=${exp}></datetime-viewer>
-            </p>
-            <br>
+            
             ${this.user ? html`
-                <p>
-                    <button @click=${this.logout}>Log out</button>
+                <h1>You are logged in</h1>
+                <p class="wrap-anywhere">
+                    userId: ${this.user?.sub}
                 </p>
-            ` : html``}
+                <p>
+                    Issuer: ${this.user?.iss}, Idp: ${this.user?.idp}
+                </p>
+                <p>
+                    Issued: <datetime-viewer .date=${iat}></datetime-viewer>
+                </p>
+                <p>
+                    Expires: <datetime-viewer .date=${exp}></datetime-viewer>
+                </p>
+                <br>
+                <p>
+                    <button @click=${logOut}>Log out</button>
+                </p>
+            ` : html`
+                <h1>Not logged in</h1>
+            `}
             
         </section>
         `

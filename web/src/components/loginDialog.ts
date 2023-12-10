@@ -3,6 +3,7 @@ import {customElement, state} from "lit/decorators.js"
 import {unsafeHTML} from "lit/directives/unsafe-html.js"
 import { getAuthUser } from "@app/stores/authUser"
 import { getLnLoginUrl, createQr, isLoggedIn } from "@app/services/lnLogin"
+import { navigateTo } from "@app/routes"
 
 @customElement('login-dialog')
 export class LoginDialog extends LitElement {
@@ -74,7 +75,7 @@ export class LoginDialog extends LitElement {
         this.msg = JSON.stringify(data)
         getAuthUser().then(u => {
             if (u && u.sub)
-                history.replaceState(null, "", "/profile")
+                navigateTo("/profile")
         })
     }
 

@@ -3,7 +3,11 @@ import { RouterSlot } from "router-slot"
 import "./views"
 import { getUserNow } from "./stores/authUser"
 
+type RoutePaths = "/" | "/profile" | "/login"
 
+export function navigateTo(path: RoutePaths) {
+    history.replaceState(null, "", path)
+}
 
 const defaultView = () => {
     return document.createElement("home-view")
