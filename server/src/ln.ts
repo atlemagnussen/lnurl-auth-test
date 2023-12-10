@@ -56,7 +56,6 @@ export async function signJWT(payload: any) {
             .setIssuedAt()
             .setIssuer(config.hostname)
             .setAudience("users")
-            
             .setExpirationTime("24h")
             .sign(JWTsecret)
     return jwt

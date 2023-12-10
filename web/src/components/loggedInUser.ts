@@ -63,6 +63,9 @@ export class LoggedInUser extends LitElement {
     }
     render() {
         
+        const iat = this.user ? this.user.iat * 1000 : 0
+        const exp = this.user ? this.user.exp * 1000 : 0
+
         return html`
         <section class="wrapper">
             <h1>You are logged in</h1>
@@ -73,10 +76,10 @@ export class LoggedInUser extends LitElement {
                 Issuer: ${this.user?.iss}, Idp: ${this.user?.idp}
             </p>
             <p>
-                Issued: ${this.parseTokenDate(this.user?.iat)}
+                Issued: <datetime-viewer .date=${iat}></datetime-viewer>
             </p>
             <p>
-                Expires: ${this.parseTokenDate(this.user?.exp)}
+                Expires: <datetime-viewer .date=${exp}></datetime-viewer>
             </p>
         </section>
         `
