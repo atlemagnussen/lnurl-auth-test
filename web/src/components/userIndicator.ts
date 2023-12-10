@@ -1,7 +1,7 @@
 import { authUser } from "@app/stores/authUser"
 import { AuthUserToken } from "@common/types"
 import {LitElement, html, css} from "lit"
-import {customElement} from "lit/decorators.js"
+import {customElement, state} from "lit/decorators.js"
 import { Subscription } from "rxjs"
 
 @customElement('user-indicator')
@@ -21,7 +21,9 @@ export class UserIndicator extends LitElement {
         }
     `
 
+    @state()
     user: AuthUserToken | null = null
+    
     sub: Subscription | null = null
 
     connectedCallback(): void {
