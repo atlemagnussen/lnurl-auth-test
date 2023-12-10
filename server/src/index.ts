@@ -138,6 +138,16 @@ app.get("/logged-in-user", async function (req, res) {
     }
 })
 
+app.get("/logout", async function (req, res) {
+
+    const cookie = req.headers.cookie
+
+    if (!cookie)
+        return res.status(200).json({ loggedIn: false })
+    
+    return res.status(200).clearCookie("Authorization").json({ loggedIn: false })
+})
+
 app.get("*", function (req, res) {
     res.sendFile(webIndex)
 })

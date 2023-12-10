@@ -1,6 +1,6 @@
 import {LitElement, html, css} from "lit"
 import {customElement, state} from "lit/decorators.js"
-import { authUser } from "@app/stores/authUser"
+import { authUser, logOut } from "@app/stores/authUser"
 import { AuthUserToken } from "@common/types"
 import { Subscription } from "rxjs"
 
@@ -54,12 +54,9 @@ export class UserProfile extends LitElement {
             this.sub.unsubscribe()
     }
 
-    parseTokenDate(epoch?: number) {
-        if (!epoch)
-            return new Date().toISOString()
-
-        const date = new Date(epoch * 1000)
-        return date.toISOString()
+    logout() {
+        console.log("fire logout")
+        logOut()
     }
     render() {
         
@@ -80,6 +77,10 @@ export class UserProfile extends LitElement {
             </p>
             <p>
                 Expires: <datetime-viewer .date=${exp}></datetime-viewer>
+            </p>
+            <br>
+            <p>
+                <button @click=${this.logout}>Log out</button>
             </p>
         </section>
         `

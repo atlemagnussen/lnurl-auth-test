@@ -3,7 +3,6 @@ import { AuthUserToken } from "@common/types"
 import {LitElement, html, css} from "lit"
 import {customElement} from "lit/decorators.js"
 import { Subscription } from "rxjs"
-import { classMap } from "lit/directives/class-map.js"
 
 @customElement('user-indicator')
 export class UserIndicator extends LitElement {
@@ -37,11 +36,17 @@ export class UserIndicator extends LitElement {
 
         if (loggedin) {
             return html`
-            <ln-button class="loggedin"></ln-button>
-        `
+                <a href="profile">
+                    <ln-button class="loggedin"></ln-button>
+                </a>
+            `
         }
         else {
-            return html`<ln-button></ln-button>`
+            return html`
+                <a href="login">
+                    <ln-button></ln-button>
+                </a>
+            `
         }
     }
 }
