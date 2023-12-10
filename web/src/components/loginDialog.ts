@@ -19,6 +19,7 @@ export class LoginDialog extends LitElement {
             display: flex;
             flex-direction: column;
             justify-content: center;
+            align-items: center;
             gap: 1rem;
             width: var(--default-width);
             max-width: var(--default-width);
@@ -26,6 +27,7 @@ export class LoginDialog extends LitElement {
         }
         .qr-code {
             width: 80%;
+            max-width: 400px;
         }
         .wrap-anywhere {
             overflow-wrap: anywhere;
@@ -100,12 +102,15 @@ export class LoginDialog extends LitElement {
 
     sessionToken = ""
 
+    connectedCallback(): void {
+        super.connectedCallback()
+        this.getLnAuth()
+    }
     render() {
-        
         return html`
         <section class="wrapper">
             <div>
-                <button @click=${this.getLnAuth}>Get Auth url</button>
+                <dir-button @click=${this.getLnAuth}>Get a new Auth url</dir-button>
             </div>
             
             <div class="wrap-anywhere">
@@ -113,7 +118,7 @@ export class LoginDialog extends LitElement {
                 ${this.urlLnScheme}<br><br>
                 ${this.urlLnScheme ? html`<a href="${this.urlLnScheme}">LnUrl Auth scheme</a><br><br>` : ""}
                 
-                <button @click=${this.isLoggedIn}>Check is logged in</button>
+                <dir-button @click=${this.isLoggedIn}>Check is logged in</dir-button>
             </div>
 
             <div class="wrap-anywhere">
