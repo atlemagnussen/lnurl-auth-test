@@ -1,5 +1,5 @@
 import { LitElement, css, html } from "lit"
-import { customElement, property } from "lit/decorators.js"
+import { customElement, property, state } from "lit/decorators.js"
 import type { AuthUserToken, ConfigFolder } from "@common/types"
 
 import { getAuthUser, authUser } from "@app/stores/authUser"
@@ -65,6 +65,7 @@ export class LnAuthApp extends LitElement {
         }
     `
 
+    @state()
     user: AuthUserToken | null = null
 
     sub: Subscription | null = null
