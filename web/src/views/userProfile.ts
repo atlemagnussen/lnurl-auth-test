@@ -5,8 +5,8 @@ import { AuthUserToken } from "@common/types"
 import { Subscription } from "rxjs"
 
 
-@customElement('logged-in-user')
-export class LoggedInUser extends LitElement {
+@customElement('user-profile-view')
+export class UserProfile extends LitElement {
     
     static styles = css`
         :host {

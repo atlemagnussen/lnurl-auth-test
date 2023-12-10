@@ -2,11 +2,6 @@ import { LitElement, css, html } from "lit"
 import { customElement, property } from "lit/decorators.js"
 import dialog from "@app/components/dialogEl"
 
-interface NamedLink {
-    name: string
-    path: string
-}
-
 @customElement('dir-header')
 export class DirHeader extends LitElement {
     static styles = css`
@@ -22,6 +17,7 @@ export class DirHeader extends LitElement {
             display: flex;
             flex-direction: row;
             justify-content: center;
+            align-items: center;
             gap: 1rem;
             width: var(--default-width);
             max-width: var(--default-width);
@@ -33,14 +29,7 @@ export class DirHeader extends LitElement {
             margin-block-start: 0;
             margin-block-end: 0;
         }
-        a {
-            color: var(--headline-color);
-        }
-        audio-link {
-            flex: 1 1 auto;
-            color: var(--headline-color);
-            font-size: 1.2rem;
-        }
+        
         @media only screen and (max-width: 640px) {
             .wrapper {
                 width: 100%;
@@ -50,7 +39,7 @@ export class DirHeader extends LitElement {
                 font-size: 1.1rem;
             }
         }
-        home-button, search-button {
+        home-button, user-indicator {
             --button-height: 3rem;
             --button-width: 3rem;
         }
@@ -67,30 +56,6 @@ export class DirHeader extends LitElement {
         }, "<search-view></search-view>")
     }
 
-    renderBreadCrumb() {
-
-        let pathSplit = location.pathname.split("/")
-        document.title = decodeURI(location.pathname)
-        pathSplit = pathSplit.filter(p => p)
-
-        let link = "/"
-        let links = pathSplit.map(p => {
-            link = `${link}${p}/`
-            const namedLink: NamedLink = {
-                name: decodeURI(p),
-                path: link
-            }
-            return namedLink
-            
-        })
-        
-        return html`<h1>
-            ${links.map((p) => 
-                html`<a href="${p.path}">${p.name}/</a>`
-            )}
-            </h1>
-        `
-    }
 
     render() {
         const title = decodeURI(this.title)
@@ -100,12 +65,8 @@ export class DirHeader extends LitElement {
                 <a href="/">
                     <home-button></home-button>
                 </a>
-                ${location.pathname == "/" ? 
-                    html`<h1>${title}</h1>` : 
-                    this.renderBreadCrumb()
-                }
-                
-                
+                <h1>${title}</h1>
+                <user-indicator></user-indicator>
             </div>
         `
     }

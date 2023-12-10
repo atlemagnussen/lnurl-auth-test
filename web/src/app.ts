@@ -5,9 +5,10 @@ import type { AuthUserToken, ConfigFolder } from "@common/types"
 import { getAuthUser, authUser } from "@app/stores/authUser"
 
 // import Dialog from "@app/components/dialogEl"
-
+import { setupRoutes } from  "./routes"
 import "./dirHeader"
 import "./components"
+import "./buttons"
 import "./vars.css"
 import "./index.css"
 import { Subscription } from "rxjs"
@@ -81,6 +82,10 @@ export class LnAuthApp extends LitElement {
         this.sub = authUser.subscribe(u => this.user = u)
     }
 
+    firstUpdated() {
+        const routerSlot = this.shadowRoot?.querySelector("router-slot")
+        setupRoutes(routerSlot)
+    }
     // login() {
     //     Dialog.openHtml({
     //         title: "Login LN",
@@ -94,12 +99,7 @@ export class LnAuthApp extends LitElement {
             </header>
 
             <main>
-                ${this.user ? html`
-                    <logged-in-user></logged-in-user>
-                ` : html`
-                    <login-dialog></login-dialog>
-                `}
-                
+                <router-slot></router-slot>
             </main>
 
             <footer>
@@ -107,5 +107,5 @@ export class LnAuthApp extends LitElement {
             </footer>
 
         `
-  }
+    }
 }
