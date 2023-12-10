@@ -83,7 +83,7 @@ export class UserProfile extends LitElement {
                 </p>
                 <br>
                 <p>
-                    <button @click=${logOut}>Log out</button>
+                    <dir-button @click=${logOut}>Log out</dir-button>
                 </p>
             ` : html`
                 <h1>Not logged in</h1>
