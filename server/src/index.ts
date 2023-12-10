@@ -44,7 +44,7 @@ app.get("/login-url", async (req, res) => {
  * key will be the unique ID for the now authenticated user
  * We create a new auth token and sign it
  */
-app.get("/login", async (req, res) => {
+app.get("/login-ln", async (req, res) => {
     try {
         const { tag, k1, sig, key } = req.query;
 

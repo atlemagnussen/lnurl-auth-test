@@ -31,6 +31,10 @@ export function setupRoutes(routerSlot:  RouterSlot<any, any> | null | undefined
             component: document.createElement("user-profile-view")
         },
         {
+            path: "login",
+            component: document.createElement("login-dialog")
+        },
+        {
             path: "**",
             redirectTo: "home"
         }

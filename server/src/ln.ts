@@ -18,7 +18,7 @@ const generateAuthUrl = (protocol: string, k1: string, action: Action = "login")
     let url = `${protocol}://${config.hostname}`
     if (config.portInLnLink)
         url += `:${config.port}`
-    url += `/login?tag=login&k1=${k1}&action=${action}`
+    url += `/login-ln?tag=login&k1=${k1}&action=${action}`
     return url
 }
 
