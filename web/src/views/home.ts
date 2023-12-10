@@ -5,9 +5,17 @@ import { customElement } from "lit/decorators.js"
 export class HomeView extends LitElement {
     static styles = css`
         :host {
-            display: block
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
         }
-        
+        article {
+            width: var(--default-width);
+            max-width: var(--default-width);
+        }
+        a {
+            color: var(--ln-purple);
+        }
     `
     
     render() {

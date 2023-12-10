@@ -61,7 +61,7 @@ const resHandler = async (res: Response) => {
             return ""
         }
     } else {
-        console.error(`${res.statusText} (${res.status})`)
+        console.debug(`${res.statusText} (${res.status})`)
         
         errorFetchMsg = "Error fetching"
         
