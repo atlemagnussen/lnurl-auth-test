@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from "express"
 import cookie from "cookie"
 import { v4 as uuidv4 } from "uuid"
+import { findUserByHash } from "./ln.js"
+import { SavedUser } from "@common/types.js"
 
 
 export function sessionCookie(req: Request, res: Response, next: NextFunction) {
@@ -32,21 +34,24 @@ function createSession(res: Response) {
     })
 }
 
-export function sendLoggedInEvents(res: Response, jwt: string) {
+export function sendLoggedInEvents(res: Response) {
     console.log("sendLoggedInEvents")
     res.write("event: authenticated\n")
     res.write("data: You are now authenticated!\n")
     res.write("id: 10")
-
-    res.cookie("Authorization", jwt, {
-        maxAge: 24 * 60 * 60 * 1000,
-        secure: false,
-        httpOnly: true,
-        sameSite: "lax",
-    })
 }
 
-export function sentLoggedInJwt(res: Response, jwt: string) {
+export function sendLoggedInJwt(res: Response, user: SavedUser) {
+
+    if (!user.jwt) {
+        console.log("no jwt waiting")
+        return res.status(400)
+    }
+
+    const jwt = new String(user.jwt)
+
+    user.jwt = undefined
+
     return res.status(200)
     .set("Cache-Control", "no-store")
     .cookie("Authorization", jwt, {

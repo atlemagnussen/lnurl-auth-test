@@ -4,7 +4,7 @@ import bodyParser from "body-parser"
 import config from "./config.js"
 import * as ln from "./ln.js"
 import type { Action, ErrorResponse } from "../../common/types.js"
-import { sessionCookie, getSessionId, sendLoggedInEvents } from "./session.js"
+import { sessionCookie, getSessionId, sendLoggedInEvents, sendLoggedInJwt } from "./session.js"
 
 let sessionRes: Record<string, express.Response> = {}
 
@@ -74,7 +74,7 @@ app.get("/login-ln", async (req, res) => {
             const resEvent = sessionRes[user.sessionId]
             if (resEvent) {
                 console.log("found resEvent")
-                sendLoggedInEvents(resEvent, jwt)
+                sendLoggedInEvents(resEvent)
             }
         }
         
@@ -138,6 +138,22 @@ app.get("/is-logged-in", async (req, res) => {
         res.end("OK")
         delete sessionRes[sessionId]
     })
+})
+
+app.get("/get-access-token", async (req, res) => {
+
+    const sessionId = getSessionId(req)
+
+    if (!sessionId)
+        return res.json({loggedIn: false, reason: "no session id"})
+
+    const user = ln.getUserBySession(sessionId)
+    if (!user) {
+        console.log("no user waiting")
+        return res.status(400)
+    }
+
+    return sendLoggedInJwt(res, user)
 })
 
 /**

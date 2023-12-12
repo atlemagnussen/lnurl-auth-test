@@ -130,11 +130,6 @@ export function assignUserKeyJwt(k1: string, key: string, jwt: string) {
     return user
 }
 
-export function findUserByHash(hash: string) {
-    const user = users.find(u => u.hash == hash)
-    return user
-}
-
 export async function extractTokenFromCookie(cookieHeader?: string) {
     console.log("cookieHeader", cookieHeader)
     

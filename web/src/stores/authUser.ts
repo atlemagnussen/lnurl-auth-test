@@ -29,6 +29,10 @@ export async function getAuthUser() {
     return null
 }
 
+export function getJwt() {
+    return backendHttp.get("get-access-token")
+}
+
 export function getUserNow() {
     return authUserSubject.getValue()
 }
