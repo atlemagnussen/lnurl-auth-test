@@ -70,6 +70,7 @@ app.get("/login-ln", async (req, res) => {
         ln.assignUserKeyJwt(k1 as string, key as string, jwt)
 
         const user = ln.getUserByK1(k1)
+        console.log("login-ln user", user)
         if (user) {
             const resEvent = sessionRes[user.sessionId]
             if (resEvent) {

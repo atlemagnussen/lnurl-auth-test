@@ -82,6 +82,10 @@ export class LoginDialog extends LitElement {
             console.log(e)
             this.msg += e.data + "<br>"
         })
+        evtSource.addEventListener("authenticated", (e) => {
+            console.log(e)
+            this.msg += e.data + "<br>"
+        })
         // this.msg = ""
         // const data = await isLoggedIn(this.sessionToken).catch(this.errorHandler)
         // this.msg = JSON.stringify(data)
