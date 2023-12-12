@@ -127,6 +127,7 @@ export function assignUserKeyJwt(k1: string, key: string, jwt: string) {
     console.log(`Assigned ${key} and ${jwt}`)
     user.key = key
     user.jwt = jwt
+    return user
 }
 
 export function findUserByHash(hash: string) {

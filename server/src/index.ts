@@ -67,13 +67,13 @@ app.get("/login-ln", async (req, res) => {
 
         const jwt = await ln.signJWT({ sub: key, idp: "LNURL-auth" })
         
-        ln.assignUserKeyJwt(k1 as string, key as string, jwt)
+        const user = ln.assignUserKeyJwt(k1 as string, key as string, jwt)
 
-        const user = ln.getUserByK1(k1)
         console.log("login-ln user", user)
         if (user) {
             const resEvent = sessionRes[user.sessionId]
             if (resEvent) {
+                console.log("found resEvent")
                 sendLoggedInEvents(resEvent)
             }
         }
