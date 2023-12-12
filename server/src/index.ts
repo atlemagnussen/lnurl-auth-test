@@ -110,11 +110,14 @@ app.get("/is-logged-in", async (req, res) => {
     let counter = 0;
     
     console.log("send connected event")
-    res.write('event: connected\n')
+    res.write(`event: connected\n`)
     res.write(`data: You are now subscribed!\n`)
     res.write(`id: ${counter}\n\n`)
     counter += 1
 
+    const intervalId = setInterval(() => {
+        res.write(`data: keep connection alive\n\n`)
+    }, 6 * 1000)
     // setInterval(() => {
     //     console.log("send new message")
     //     res.write('event: message\n')
@@ -127,6 +130,7 @@ app.get("/is-logged-in", async (req, res) => {
     sessionRes[sessionId] = res
 
     req.on("close", () => {
+        clearInterval(intervalId)
         console.log("client closed")
         res.end("OK")
         delete sessionRes[sessionId]
