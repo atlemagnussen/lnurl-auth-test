@@ -74,7 +74,7 @@ app.get("/login-ln", async (req, res) => {
             const resEvent = sessionRes[user.sessionId]
             if (resEvent) {
                 console.log("found resEvent")
-                sendLoggedInEvents(resEvent)
+                sendLoggedInEvents(resEvent, jwt)
             }
         }
         
@@ -105,7 +105,8 @@ app.get("/is-logged-in", async (req, res) => {
         "Content-Type": "text/event-stream",
         Connection: "keep-alive",
         "Cache-Control": "no-cache",
-        "X-Accel-Buffering": "no"
+        "X-Accel-Buffering": "no",
+        "Access-Control-Allow-Credentials": "true"
     })
 
     let counter = 0;
@@ -116,10 +117,10 @@ app.get("/is-logged-in", async (req, res) => {
     res.write(`id: ${counter}\n\n`)
     counter += 1
 
-    const intervalId = setInterval(() => {
-        console.log("keep alive")
-        res.write(`data: keep connection alive\n\n`)
-    }, 6 * 1000)
+    // const intervalId = setInterval(() => {
+    //     console.log("keep alive")
+    //     res.write(`data: keep connection alive\n\n`)
+    // }, 6 * 1000)
     // setInterval(() => {
     //     console.log("send new message")
     //     res.write('event: message\n')
@@ -132,7 +133,7 @@ app.get("/is-logged-in", async (req, res) => {
     sessionRes[sessionId] = res
 
     req.on("close", () => {
-        clearInterval(intervalId)
+        //clearInterval(intervalId)
         console.log("client closed")
         res.end("OK")
         delete sessionRes[sessionId]

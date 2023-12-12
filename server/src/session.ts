@@ -32,11 +32,18 @@ function createSession(res: Response) {
     })
 }
 
-export function sendLoggedInEvents(res: Response) {
+export function sendLoggedInEvents(res: Response, jwt: string) {
     console.log("sendLoggedInEvents")
     res.write("event: authenticated\n")
     res.write("data: You are now authenticated!\n")
     res.write("id: 10")
+
+    res.cookie("Authorization", jwt, {
+        maxAge: 24 * 60 * 60 * 1000,
+        secure: false,
+        httpOnly: true,
+        sameSite: "lax",
+    })
 }
 
 export function sentLoggedInJwt(res: Response, jwt: string) {
