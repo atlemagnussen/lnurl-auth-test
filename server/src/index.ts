@@ -116,6 +116,7 @@ app.get("/is-logged-in", async (req, res) => {
     counter += 1
 
     const intervalId = setInterval(() => {
+        console.log("keep alive")
         res.write(`data: keep connection alive\n\n`)
     }, 6 * 1000)
     // setInterval(() => {
