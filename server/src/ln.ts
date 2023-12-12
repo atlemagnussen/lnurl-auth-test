@@ -86,7 +86,7 @@ export async function verifySig(sig: string, k1: string, key: string) {
     return { key, hash }
 }
 
-function getUserByHash(hash: string) {
+export function getUserByHash(hash: string) {
     const user = users.find(u => u.hash == hash)
     return user
 }
