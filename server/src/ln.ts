@@ -13,37 +13,35 @@ const hashAlg = "sha256"
 const signAlg = "HS256"
 const JWTsecret = new TextEncoder().encode("cc7e0d44fd473002f1c42167459001140ec6389b7353f8088f4d9a95f2f596f2")
 
-const generateAuthUrl = (protocol: string, k1: string, action: Action = "login") => {
-    
-    let url = `${protocol}://${config.hostname}`
+function generateAuthUrlBase(protocol: string, k1: string, action: Action = "login") {
+    let url = `${config.hostname}`
     if (config.portInLnLink)
         url += `:${config.port}`
     url += `/login-ln?tag=login&k1=${k1}&action=${action}`
     return url
 }
 
-export async function getLoginUrl(protocol: string, action: Action = "login"): Promise<LoginUrlResponse> {
+export async function getLoginUrl(protocol: string, sessionId: string, action: Action = "login"): Promise<LoginUrlResponse> {
     const k1 = await generateK1()
-    const url = generateAuthUrl(protocol, k1, action)
-    const urlLnScheme = url.replace("http://", "keyauth://")
+    const urlBase = generateAuthUrlBase(protocol, k1, action)
+    const url = `${protocol}://${urlBase}`
+    const urlLnScheme = `keyauth://${urlBase}`
     const hash = createHash(k1)
 
-    const sessionToken = await signSessionToken({ hash})
+    // const sessionToken = await signSessionToken({ hash})
 
-    users.push({k1, hash})
+    users.push({k1, sessionId, hash})
 
     return {
         url,
         encodedUrl: lnurl.encode(url).toUpperCase(),
         urlLnScheme,
-        k1,
-        hash,
-        sessionToken
+        k1
     }
 }
 
 export async function verifySessionToken(sessionToken: string) {
-    const verification = await jose.jwtVerify(
+    const verification = await jose.jwtVerify (
         sessionToken,
         Buffer.from(JWTsecret), { algorithms: [signAlg] }
     )
@@ -82,15 +80,24 @@ export async function verifySig(sig: string, k1: string, key: string) {
        throw new Error("Signature verification failed")
     }
     const hash = createHash(k1);
-    const hashExist = await isHashUsed(hash)
+    const hashExist = getUserByHash(hash)
     if (!hashExist)
         throw new Error("Provided k1 is not issued by server")
     return { key, hash }
 }
 
-async function isHashUsed(hash: string) {
-    const found = users.find(u => u.hash == hash)
-    return found
+function getUserByHash(hash: string) {
+    const user = users.find(u => u.hash == hash)
+    return user
+}
+export function getUserBySession(sessionId: string) {
+    const user = users.find(u => u.sessionId == sessionId)
+    return user
+}
+
+export function getUserByK1(k1: string) {
+    const user = users.find(u => u.k1 == k1)
+    return user
 }
 
 export async function generateK1() {
@@ -100,7 +107,7 @@ export async function generateK1() {
     while (k1 === null && attempt < maxAttempts) {
         k1 = crypto.randomBytes(32).toString("hex")
         const hash = createHash(k1)
-        const isUsed = await isHashUsed(hash)
+        const isUsed = getUserByHash(hash)
         if (isUsed) {
             k1 = null
         }

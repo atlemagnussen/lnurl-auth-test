@@ -4,8 +4,9 @@ import bodyParser from "body-parser"
 import config from "./config.js"
 import * as ln from "./ln.js"
 import type { Action, ErrorResponse } from "../../common/types.js"
-import { sessionCookie, getSessionId } from "./session.js"
+import { sessionCookie, getSessionId, sendLoggedInEvents } from "./session.js"
 
+let sessionRes: Record<string, express.Response> = {}
 
 const app = express()
 app.use(bodyParser.json()) 
@@ -29,11 +30,11 @@ app.get("/login-url", async (req, res) => {
     const action = req.query.action ?? "login"
     console.log(`login-url:: protocol=${req.protocol}, action=${action}`)
 
-    const sessionId = getSessionId(req)
+    const sessionId = getSessionId(req) as string
     console.log("sessionId", sessionId)
 
     try {
-        const loginUrlData = await ln.getLoginUrl(req.protocol, action as Action)
+        const loginUrlData = await ln.getLoginUrl(req.protocol, sessionId, action as Action)
         console.log("baseurl created: ", loginUrlData.url)
         return res.status(200).json(loginUrlData)
 
@@ -53,7 +54,10 @@ app.get("/login-url", async (req, res) => {
  */
 app.get("/login-ln", async (req, res) => {
     try {
-        const { tag, k1, sig, key } = req.query;
+        const tag = req.query.tag as string
+        const k1 = req.query.k1 as string
+        const sig = req.query.sig as string
+        const key = req.query.key as string
 
         console.log("login::req.query=", req.query)
 
@@ -65,6 +69,14 @@ app.get("/login-ln", async (req, res) => {
         
         ln.assignUserKeyJwt(k1 as string, key as string, jwt)
 
+        const user = ln.getUserByK1(k1)
+        if (user) {
+            const resEvent = sessionRes[user.sessionId]
+            if (resEvent) {
+                sendLoggedInEvents(resEvent)
+            }
+        }
+        
         return res.status(200).json({ status: "OK" })
 
     } catch(error: any) {
@@ -87,46 +99,37 @@ app.get("/is-logged-in", async (req, res) => {
     if (!sessionId)
         return res.json({loggedIn: false, reason: "no session id"})
 
-
+    console.log("Open event stream")
     res.writeHead(200, {
         "Content-Type": "text/event-stream",
         Connection: "keep-alive",
         "Cache-Control": "no-cache",
     })
-    try {
-        const verification = await ln.verifySessionToken(sessionToken)
-        console.log("verification", verification)
 
-        const hash = verification.payload.hash
-        if (hash) {
-            const user = ln.findUserByHash(hash as string)
-            if (user && user.jwt) {
+    let counter = 0;
     
-                return res.status(200)
-                .set("Cache-Control", "no-store")
-                .cookie("Authorization", user.jwt, {
-                    maxAge: 24 * 60 * 60 * 1000,
-                    secure: false,
-                    httpOnly: true,
-                    sameSite: "lax",
-                })
-                .header('Access-Control-Allow-Origin', serverUrl)
-                .header("Access-Control-Allow-Credentials","true")
-                .json({ loggedIn: true })
-            }   
-        }
-    }
-    catch (error: any) {
-        console.error(error)
-        if (error.reason) {
-            const errRes: ErrorResponse = { reason: error.reason}
-            if (error.code == "ERR_JWT_EXPIRED")
-                errRes.reason += ". Login link expired"
-            
-            return res.status(400).json(errRes)
-        }
-    }
-    return res.json({loggedIn: false, msg: "Could not find user"})
+    console.log("send connected event")
+    res.write('event: connected\n')
+    res.write(`data: You are now subscribed!\n`)
+    res.write(`id: ${counter}\n\n`)
+    counter += 1
+
+    // setInterval(() => {
+    //     console.log("send new message")
+    //     res.write('event: message\n')
+    //     res.write(`data: ${new Date().toLocaleString()}\n`)
+    //     res.write(`id: ${counter}\n\n`)
+    //     counter += 1
+    // }, 5000)
+    
+    
+    sessionRes[sessionId] = res
+
+    req.on("close", () => {
+        console.log("client closed")
+        res.end("OK")
+        delete sessionRes[sessionId]
+    })
 })
 
 /**

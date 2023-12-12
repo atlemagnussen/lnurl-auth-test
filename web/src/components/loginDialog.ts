@@ -1,9 +1,9 @@
 import {LitElement, html, css} from "lit"
 import {customElement, state} from "lit/decorators.js"
 import {unsafeHTML} from "lit/directives/unsafe-html.js"
-import { getAuthUser } from "@app/stores/authUser"
-import { getLnLoginUrl, createQr, isLoggedIn } from "@app/services/lnLogin"
-import { navigateTo } from "@app/routes"
+// import { getAuthUser } from "@app/stores/authUser"
+import { getLnLoginUrl, createQr } from "@app/services/lnLogin"
+// import { navigateTo } from "@app/routes"
 
 @customElement('login-dialog')
 export class LoginDialog extends LitElement {
@@ -64,8 +64,6 @@ export class LoginDialog extends LitElement {
             this.url = data.url
             // this.encoded = data.encodedUrl
             this.urlLnScheme = data.urlLnScheme
-
-            this.sessionToken = data.sessionToken
     
             const qr = createQr(data.urlLnScheme)
             this.qrSvg = qr
@@ -74,17 +72,23 @@ export class LoginDialog extends LitElement {
     }
 
     async isLoggedIn() {
-        if (!this.sessionToken) {
-            this.msg = "no session token yet"
-            return
+        const evtSource = new EventSource("is-logged-in")
+
+        evtSource.onmessage = (e) => {
+            console.log(e)
+            this.msg += e.data + "<br>"
         }
-        this.msg = ""
-        const data = await isLoggedIn(this.sessionToken).catch(this.errorHandler)
-        this.msg = JSON.stringify(data)
-        getAuthUser().then(u => {
-            if (u && u.sub)
-                navigateTo("/profile")
+        evtSource.addEventListener("connected", (e) => {
+            console.log(e)
+            this.msg += e.data + "<br>"
         })
+        // this.msg = ""
+        // const data = await isLoggedIn(this.sessionToken).catch(this.errorHandler)
+        // this.msg = JSON.stringify(data)
+        // getAuthUser().then(u => {
+        //     if (u && u.sub)
+        //         navigateTo("/profile")
+        // })
     }
 
     errorHandler(err:any) {
@@ -105,8 +109,6 @@ export class LoginDialog extends LitElement {
 
     @state()
     msg = ""
-
-    sessionToken = ""
 
     connectedCallback(): void {
         super.connectedCallback()

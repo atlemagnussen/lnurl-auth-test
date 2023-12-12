@@ -9,12 +9,11 @@ export interface LoginUrlResponse {
     encodedUrl: string
     urlLnScheme: string
     k1: string
-    hash: string
-    sessionToken: string
 }
 
 export interface SavedUser {
     k1: string
+    sessionId: string
     hash: string
     key?: string
     jwt?: string
