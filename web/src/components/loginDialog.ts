@@ -92,6 +92,10 @@ export class LoginDialog extends LitElement {
                     //navigateTo("/profile")
             })
         })
+        evtSource.onerror = (err) => {
+            console.error("EventSource failed:", err)
+            this.msg += "error eventsource"
+        }
     }
 
     errorHandler(err:any) {

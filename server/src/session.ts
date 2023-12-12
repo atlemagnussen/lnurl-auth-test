@@ -35,9 +35,9 @@ function createSession(res: Response) {
 
 export function sendLoggedInEvents(res: Response) {
     console.log("sendLoggedInEvents")
-    res.write("event: authenticated\n")
-    res.write("data: You are now authenticated!\n")
-    res.write("id: 10")
+    res.write(`event: authenticated\n`)
+    res.write(`data: You are now authenticated!\n`)
+    res.write(`id: 10\n\n`)
 }
 
 export function sendLoggedInJwt(res: Response, user: SavedUser) {
