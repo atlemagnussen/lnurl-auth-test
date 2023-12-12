@@ -4,6 +4,8 @@ import bodyParser from "body-parser"
 import config from "./config.js"
 import * as ln from "./ln.js"
 import type { Action, ErrorResponse } from "../../common/types.js"
+import { sessionCookie, getSessionId } from "./session.js"
+
 
 const app = express()
 app.use(bodyParser.json()) 
@@ -15,15 +17,20 @@ console.log("web", web)
 const webIndex = path.resolve(web, "index.html")
 
 app.use(express.static(web))
+app.use(sessionCookie)
 
 /**
  * 1. User requests a LNURL AUTH URL
  *  Web client will present as a QR code
  *  We also return a 5min long session token
  */
+
 app.get("/login-url", async (req, res) => {
     const action = req.query.action ?? "login"
     console.log(`login-url:: protocol=${req.protocol}, action=${action}`)
+
+    const sessionId = getSessionId(req)
+    console.log("sessionId", sessionId)
 
     try {
         const loginUrlData = await ln.getLoginUrl(req.protocol, action as Action)
@@ -75,11 +82,17 @@ app.get("/login-ln", async (req, res) => {
  * The session token from 1. will be validated, if OK the auth token will be set as a cookie
  */
 app.get("/is-logged-in", async (req, res) => {
-    const sessionToken = req.headers.sessiontoken as string
+    const sessionId = getSessionId(req)
 
-    if (!sessionToken)
-        return res.json({loggedIn: false, reason: "no session token"})
+    if (!sessionId)
+        return res.json({loggedIn: false, reason: "no session id"})
 
+
+    res.writeHead(200, {
+        "Content-Type": "text/event-stream",
+        Connection: "keep-alive",
+        "Cache-Control": "no-cache",
+    })
     try {
         const verification = await ln.verifySessionToken(sessionToken)
         console.log("verification", verification)
