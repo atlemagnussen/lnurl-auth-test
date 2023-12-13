@@ -3,7 +3,7 @@ import {customElement, state} from "lit/decorators.js"
 import {unsafeHTML} from "lit/directives/unsafe-html.js"
 import { getAuthUser, getJwt } from "@app/stores/authUser"
 import { getLnLoginUrl, createQr } from "@app/services/lnLogin"
-// import { navigateTo } from "@app/routes"
+import { navigateTo } from "@app/routes"
 
 @customElement('login-dialog')
 export class LoginDialog extends LitElement {
@@ -89,7 +89,7 @@ export class LoginDialog extends LitElement {
             await getJwt()
             getAuthUser().then(u => {
                 console.log(u)
-                    //navigateTo("/profile")
+                navigateTo("/profile")
             })
         })
         evtSource.onerror = (err) => {

@@ -47,7 +47,7 @@ export function sendLoggedInJwt(res: Response, user: SavedUser) {
         return res.status(400)
     }
 
-    const jwt = new String(user.jwt)
+    const jwt = user.jwt
 
     user.jwt = undefined
 
