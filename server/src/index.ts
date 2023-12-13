@@ -144,6 +144,7 @@ app.get("/get-access-token", async (req, res) => {
 
     const sessionId = getSessionId(req)
 
+    console.log("get-access-token, sessionId", sessionId)
     if (!sessionId)
         return res.json({loggedIn: false, reason: "no session id"})
 
@@ -152,6 +153,8 @@ app.get("/get-access-token", async (req, res) => {
         console.log("no user waiting")
         return res.status(400)
     }
+
+    console.log(user)
 
     return sendLoggedInJwt(res, user)
 })
