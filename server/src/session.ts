@@ -49,7 +49,7 @@ export function sendLoggedInJwt(res: Response, user: SavedUser) {
 
     const jwt = user.jwt
 
-    user.jwt = undefined
+    user.jwt = ""
 
     return res.status(200)
     .set("Cache-Control", "no-store")
