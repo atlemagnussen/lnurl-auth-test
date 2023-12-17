@@ -1,4 +1,5 @@
 import "./checkbox"
-import "./loginDialog"
+import "./loginDialogLn"
+import "./loginDialogWa"
 import "./dateTimeViewer"
 import "./userIndicator"

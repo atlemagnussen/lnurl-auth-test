@@ -41,3 +41,5 @@ export async function logOut() {
     await backendHttp.get("logout")
     getAuthUser()
 }
+
+export type LoginMethods = "lnurl-auth" | "webauthn"

@@ -37,7 +37,7 @@ export function setupRoutes(routerSlot:  RouterSlot<any, any> | null | undefined
         },
         {
             path: "login",
-            component: document.createElement("login-dialog")
+            component: document.createElement("login-view")
         },
         {
             path: "/",

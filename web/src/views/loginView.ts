@@ -1,13 +1,12 @@
 import {LitElement, html, css} from "lit"
 import {customElement, state} from "lit/decorators.js"
-import { authUser } from "@app/stores/authUser"
+import { LoginMethods, authUser, logOut } from "@app/stores/authUser"
 import { AuthUserToken } from "@common/types"
 import { Subscription } from "rxjs"
-import { navigateTo } from "@app/routes"
 
 
-@customElement('user-profile-view')
-export class UserProfile extends LitElement {
+@customElement('login-view')
+export class LoginView extends LitElement {
     
     static styles = css`
         :host {
@@ -20,6 +19,7 @@ export class UserProfile extends LitElement {
             display: flex;
             flex-direction: column;
             justify-content: center;
+            align-items: center;
             gap: 1rem;
             width: var(--default-width);
             max-width: var(--default-width);
@@ -41,6 +41,9 @@ export class UserProfile extends LitElement {
     `
 
     @state()
+    loginMethod: LoginMethods | null = null
+
+    @state()
     user: AuthUserToken | null = null
 
     sub: Subscription | null = null
@@ -49,45 +52,50 @@ export class UserProfile extends LitElement {
         super.connectedCallback()
         this.sub = authUser.subscribe(u => {
             this.user = u
-            if (!this.user)
-                navigateTo("/login")
         })
     }
     disconnectedCallback(): void {
         super.disconnectedCallback()
         if (this.sub)
             this.sub.unsubscribe()
+        this.loginMethod = null
     }
 
+    openLoginFor(method: LoginMethods) {
+        this.loginMethod = method
+    }
+    renderSelector() {
+        return html`
+            <header>
+                <h1>Log in</h1>
+            </header>
+            <p>
+                <dir-button @click=${() => this.openLoginFor("lnurl-auth")}>With LNURL-Auth</dir-button>
+            </p>
+            <p>
+                <dir-button @click=${() => this.openLoginFor("webauthn")}>With WebAuthn</dir-button>
+            </p>
+            <p>
+                <dir-button @click=${logOut}>Log out</dir-button>
+            </p>
+        `
+    }
     render() {
-        
-        const iat = this.user ? this.user.iat * 1000 : 0
-        const exp = this.user ? this.user.exp * 1000 : 0
+
+        let view = this.renderSelector()
+        if (this.user?.sub)
+            view = html`<user-profile-view></user-profile-view>`
+
+        else if (this.loginMethod == "lnurl-auth")
+            view = html`<login-dialog-ln></login-dialog-ln>`
+
+        else if (this.loginMethod == "webauthn")
+            view = html`<login-dialog-wa></login-dialog-wa>`
 
         return html`
-        <section class="wrapper">
-            
-            ${this.user ? html`
-                <h1>You are logged in</h1>
-                <p class="wrap-anywhere">
-                    userId: ${this.user?.sub}
-                </p>
-                <p>
-                    Issuer: ${this.user?.iss}, Idp: ${this.user?.idp}
-                </p>
-                <p>
-                    Issued: <datetime-viewer .date=${iat}></datetime-viewer>
-                </p>
-                <p>
-                    Expires: <datetime-viewer .date=${exp}></datetime-viewer>
-                </p>
-                <br>
-                
-            ` : html`
-                <h1>Not logged in</h1>
-            `}
-            
-        </section>
+            <section class="wrapper">
+                ${view}
+            </section>
         `
     }
 }

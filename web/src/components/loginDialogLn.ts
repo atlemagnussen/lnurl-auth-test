@@ -5,8 +5,8 @@ import { getAuthUser, getJwt } from "@app/stores/authUser"
 import { getLnLoginUrl, createQr } from "@app/services/lnLogin"
 import { navigateTo } from "@app/routes"
 
-@customElement('login-dialog')
-export class LoginDialog extends LitElement {
+@customElement('login-dialog-ln')
+export class LoginDialogLn extends LitElement {
     
     static styles = css`
         :host {
