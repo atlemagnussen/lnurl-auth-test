@@ -45,6 +45,7 @@ export class LoginDialogWa extends LitElement {
 
     async getLogin() {
         const login = await getCredentials()
+        console.log(login)
         this.msg = JSON.stringify(login)
     }
 
@@ -67,6 +68,7 @@ export class LoginDialogWa extends LitElement {
             <p>
                 <dir-button @click=${this.getLogin}></dir-button>
             </p>
+            ${this.msg}
         </section>
         `
     }
