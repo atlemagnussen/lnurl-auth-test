@@ -1,12 +1,12 @@
 let randomStringFromServer = "fdkjhsdf65dsfuihsdf"
 
-async function getCredentials() {
+export async function getCredentials() {
     const publicKeyCredentialCreationOptions: PublicKeyCredentialCreationOptions = {
         challenge: Uint8Array.from(
             randomStringFromServer, c => c.charCodeAt(0)),
         rp: {
-            name: "Duo Security",
-            id: "duosecurity.com",
+            name: "AtleGuru",
+            id: "localhost",
         },
         user: {
             id: Uint8Array.from(

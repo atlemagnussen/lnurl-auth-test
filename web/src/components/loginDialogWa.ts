@@ -1,5 +1,7 @@
 import {LitElement, html, css} from "lit"
 import {customElement, state} from "lit/decorators.js"
+import { getCredentials } from "@app/services/waLogin"
+
 
 @customElement('login-dialog-wa')
 export class LoginDialogWa extends LitElement {
@@ -41,6 +43,10 @@ export class LoginDialogWa extends LitElement {
         }
     `
 
+    async getLogin() {
+        const login = await getCredentials()
+        this.msg = JSON.stringify(login)
+    }
 
     errorHandler(err:any) {
         this.msg = "error: " + err.message
@@ -58,7 +64,9 @@ export class LoginDialogWa extends LitElement {
             <header>
                 <h1>Log in with WebAuthn</h1>
             </header>
-            
+            <p>
+                <dir-button @click=${this.getLogin}></dir-button>
+            </p>
         </section>
         `
     }
