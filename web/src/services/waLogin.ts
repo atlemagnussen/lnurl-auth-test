@@ -11,8 +11,8 @@ export async function getCredentials() {
         user: {
             id: Uint8Array.from(
                 "UZSL85T9AFC", c => c.charCodeAt(0)),
-            name: "lee@webauthn.guide",
-            displayName: "Lee",
+            name: "atle@atle.guru",
+            displayName: "AtleGuru",
         },
         pubKeyCredParams: [{alg: -7, type: "public-key"}],
         authenticatorSelection: {
