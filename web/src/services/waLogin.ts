@@ -6,7 +6,7 @@ export async function getCredentials() {
             randomStringFromServer, c => c.charCodeAt(0)),
         rp: {
             name: "AtleGuru",
-            id: "localhost",
+            id: "www.atle.guru",
         },
         user: {
             id: Uint8Array.from(
